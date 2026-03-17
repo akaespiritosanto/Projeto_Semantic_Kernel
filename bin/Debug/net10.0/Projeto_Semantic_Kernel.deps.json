@@ -12,7 +12,7 @@
           "Microsoft.Extensions.Logging": "10.0.5",
           "Microsoft.Extensions.Logging.Console": "10.0.5",
           "Microsoft.SemanticKernel": "1.73.0",
-          "Microsoft.SemanticKernel.Connectors.OpenAI": "1.73.0"
+          "Microsoft.SemanticKernel.Connectors.Ollama": "1.73.0-alpha"
         },
         "runtime": {
           "Projeto_Semantic_Kernel.dll": {}
@@ -300,6 +300,19 @@
           }
         }
       },
+      "Microsoft.SemanticKernel.Connectors.Ollama/1.73.0-alpha": {
+        "dependencies": {
+          "Microsoft.SemanticKernel.Abstractions": "1.73.0",
+          "Microsoft.SemanticKernel.Core": "1.73.0",
+          "OllamaSharp": "5.4.12"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.SemanticKernel.Connectors.Ollama.dll": {
+            "assemblyVersion": "1.73.0.0",
+            "fileVersion": "1.73.0.0"
+          }
+        }
+      },
       "Microsoft.SemanticKernel.Connectors.OpenAI/1.73.0": {
         "dependencies": {
           "Microsoft.Extensions.AI.OpenAI": "10.3.0",
@@ -323,6 +336,17 @@
           "lib/net10.0/Microsoft.SemanticKernel.Core.dll": {
             "assemblyVersion": "1.73.0.0",
             "fileVersion": "1.73.0.0"
+          }
+        }
+      },
+      "OllamaSharp/5.4.12": {
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "10.3.0"
+        },
+        "runtime": {
+          "lib/net10.0/OllamaSharp.dll": {
+            "assemblyVersion": "5.4.12.0",
+            "fileVersion": "5.4.12.0"
           }
         }
       },
@@ -541,6 +565,13 @@
       "path": "microsoft.semantickernel.connectors.azureopenai/1.73.0",
       "hashPath": "microsoft.semantickernel.connectors.azureopenai.1.73.0.nupkg.sha512"
     },
+    "Microsoft.SemanticKernel.Connectors.Ollama/1.73.0-alpha": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xOTcom1rM70BWC81CMbaFkKqwuM6NvvgKJqfXY8l2y/QkzjTI7zPGItrADztC0dkZRukgiJpDgm47WgOcbojnA==",
+      "path": "microsoft.semantickernel.connectors.ollama/1.73.0-alpha",
+      "hashPath": "microsoft.semantickernel.connectors.ollama.1.73.0-alpha.nupkg.sha512"
+    },
     "Microsoft.SemanticKernel.Connectors.OpenAI/1.73.0": {
       "type": "package",
       "serviceable": true,
@@ -554,6 +585,13 @@
       "sha512": "sha512-RvhFdtZ3G7t50PmJwGixK4nnp3JlIZb2+jQONTCW/mVOuOW8Rwd0pOKlQKKozU7ue5QNEdKJnEjCWLai+ObtDA==",
       "path": "microsoft.semantickernel.core/1.73.0",
       "hashPath": "microsoft.semantickernel.core.1.73.0.nupkg.sha512"
+    },
+    "OllamaSharp/5.4.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uUKOgoTV9Fxo9J5syrY4OMZ/2/xlPO83tGG+FjGmY8HqJVJ1iUT5f8EsC9yNEqBBIoth9D8zzN4I5p1oQEMBhQ==",
+      "path": "ollamasharp/5.4.12",
+      "hashPath": "ollamasharp.5.4.12.nupkg.sha512"
     },
     "OpenAI/2.8.0": {
       "type": "package",

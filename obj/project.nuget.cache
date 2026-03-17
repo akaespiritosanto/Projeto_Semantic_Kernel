@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "PkrLPmdmq6Y=",
+  "dgSpecHash": "sfUc7QytNzA=",
   "success": true,
   "projectFilePath": "C:\\Users\\afons\\Desktop\\17-03-2026\\Projeto_Semantic_Kernel\\Projeto_Semantic_Kernel.csproj",
   "expectedPackageFiles": [
@@ -25,11 +25,14 @@
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\10.0.5\\microsoft.extensions.options.configurationextensions.10.0.5.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.5\\microsoft.extensions.primitives.10.0.5.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.extensions.vectordata.abstractions\\10.0.1\\microsoft.extensions.vectordata.abstractions.10.0.1.nupkg.sha512",
+    "C:\\Users\\afons\\.nuget\\packages\\microsoft.net.compilers.toolset\\4.14.0\\microsoft.net.compilers.toolset.4.14.0.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.semantickernel\\1.73.0\\microsoft.semantickernel.1.73.0.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.semantickernel.abstractions\\1.73.0\\microsoft.semantickernel.abstractions.1.73.0.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.semantickernel.connectors.azureopenai\\1.73.0\\microsoft.semantickernel.connectors.azureopenai.1.73.0.nupkg.sha512",
+    "C:\\Users\\afons\\.nuget\\packages\\microsoft.semantickernel.connectors.ollama\\1.73.0-alpha\\microsoft.semantickernel.connectors.ollama.1.73.0-alpha.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.semantickernel.connectors.openai\\1.73.0\\microsoft.semantickernel.connectors.openai.1.73.0.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\microsoft.semantickernel.core\\1.73.0\\microsoft.semantickernel.core.1.73.0.nupkg.sha512",
+    "C:\\Users\\afons\\.nuget\\packages\\ollamasharp\\5.4.12\\ollamasharp.5.4.12.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\openai\\2.8.0\\openai.2.8.0.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\system.clientmodel\\1.8.1\\system.clientmodel.1.8.1.nupkg.sha512",
     "C:\\Users\\afons\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",

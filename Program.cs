@@ -3,39 +3,29 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.Connectors.Ollama;
 
-// Populate values from your OpenAI deployment
-var modelId = "gpt-4o-mini";
-var endpoint = "https://api.openai.com/v1/chat/completions";
-var apiKey = "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";
+var builder = Kernel.CreateBuilder()
+    .AddOllamaChatCompletion(
+        modelId: "llama3.1:latest",
+        endpoint: new Uri("http://localhost:11434")
+    );
 
-// Create kernel
-var builder = Kernel.CreateBuilder();
-builder.AddOpenAIChatCompletion(modelId, endpoint, apiKey);
+// Entterprise Components
+builder.Services.AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace));
 
-builder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
+var app = builder.Build();
 
-Kernel kernel = builder.Build();
+var chatCompletionService = app.GetRequiredService<IChatCompletionService>();
 
-// Retrieve the chat completion service
-var chatCompletionService = kernel.Services.GetRequiredService<IChatCompletionService>();
-
-// Add the plugin to the kernel
-kernel.Plugins.AddFromType<LightsPlugin>("Lights");
-
-OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
+string? input;
+do
 {
-    FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-};
+    Console.Write("User > ");
+    input = Console.ReadLine();
 
-// Create chat history
-var history = new ChatHistory();
+    var result = await chatCompletionService.GetChatMessageContentAsync(input, kernel: app);
 
-// Get the response from the AI
-var result = await chatCompletionService.GetChatMessageContentAsync(
-    history,
-    executionSettings: openAIPromptExecutionSettings,
-    kernel: kernel
-);
+    Console.WriteLine("Assistant > " + result);
 
+} while (input is not null);

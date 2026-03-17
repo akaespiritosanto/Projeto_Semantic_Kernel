@@ -60,9 +60,9 @@
               "target": "Package",
               "version": "[1.73.0, )"
             },
-            "Microsoft.SemanticKernel.Connectors.OpenAI": {
+            "Microsoft.SemanticKernel.Connectors.Ollama": {
               "target": "Package",
-              "version": "[1.73.0, )"
+              "version": "[1.73.0-alpha, )"
             }
           },
           "imports": [

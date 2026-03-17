@@ -45,3 +45,5 @@ C:\Users\afons\Desktop\17-03-2026\Projeto_Semantic_Kernel\obj\Debug\net10.0\refi
 C:\Users\afons\Desktop\17-03-2026\Projeto_Semantic_Kernel\obj\Debug\net10.0\Projeto_Semantic_Kernel.pdb
 C:\Users\afons\Desktop\17-03-2026\Projeto_Semantic_Kernel\obj\Debug\net10.0\Projeto_Semantic_Kernel.genruntimeconfig.cache
 C:\Users\afons\Desktop\17-03-2026\Projeto_Semantic_Kernel\obj\Debug\net10.0\ref\Projeto_Semantic_Kernel.dll
+C:\Users\afons\Desktop\17-03-2026\Projeto_Semantic_Kernel\bin\Debug\net10.0\Microsoft.SemanticKernel.Connectors.Ollama.dll
+C:\Users\afons\Desktop\17-03-2026\Projeto_Semantic_Kernel\bin\Debug\net10.0\OllamaSharp.dll

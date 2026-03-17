@@ -1,0 +1,1252 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Extensions.AI.OpenAI</name>
+    </assembly>
+    <members>
+        <member name="T:System.Net.Mime.MediaTypeMap">
+            <summary>
+            Provides methods for mapping between file extensions and media types (MIME types).
+            </summary>
+        </member>
+        <member name="M:System.Net.Mime.MediaTypeMap.GetMediaType(System.String)">
+            <summary>
+            Gets the media type (MIME type) for the specified file path or extension.
+            </summary>
+            <param name="pathOrExtension">A file path or extension (with or without leading period).</param>
+            <returns>The media type associated with the extension, or <see langword="null"/> if no mapping exists.</returns>
+        </member>
+        <member name="M:System.Net.Mime.MediaTypeMap.GetExtension(System.String)">
+            <summary>
+            Gets the file extension for the specified media type (MIME type).
+            </summary>
+            <param name="mediaType">The media type (e.g. "application/pdf").</param>
+            <returns>The file extension (with leading period) associated with the media type, or <see langword="null"/> if no mapping exists.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the InvalidAuthorNameRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.InvalidAuthorNameRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_asciiWordChars">
+            <summary>Supports searching for characters in or not in "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".</summary>
+        </member>
+        <member name="T:Microsoft.Shared.DiagnosticIds.DiagnosticIds">
+            <summary>
+             Various diagnostic IDs reported by this repo.
+            </summary>
+            <remarks>
+             When adding a new diagnostic ID, add a corresponding suppression to the root <c>Directory.Build.targets</c> file,
+             and add a documentation entry to <c>docs/list-of-diagnostics.md</c>.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Shared.DiagnosticIds.DiagnosticIds.Experiments">
+            <summary>
+             Experiments supported by this repo.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Shared.Diagnostics.Throw">
+            <summary>
+            Defines static methods used to throw exceptions.
+            </summary>
+            <remarks>
+            The main purpose is to reduce code size, improve performance, and standardize exception
+            messages.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfNull``1(``0,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> if the specified argument is <see langword="null"/>.
+            </summary>
+            <typeparam name="T">Argument type to be checked for <see langword="null"/>.</typeparam>
+            <param name="argument">Object to be checked for <see langword="null"/>.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfNullOrMemberNull``2(``0,``1,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> if the specified argument is <see langword="null"/>,
+            or <see cref="T:System.ArgumentException" /> if the specified member is <see langword="null"/>.
+            </summary>
+            <typeparam name="TParameter">Argument type to be checked for <see langword="null"/>.</typeparam>
+            <typeparam name="TMember">Member type to be checked for <see langword="null"/>.</typeparam>
+            <param name="argument">Argument to be checked for <see langword="null"/>.</param>
+            <param name="member">Object member to be checked for <see langword="null"/>.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <param name="memberName">The name of the member.</param>
+            <returns>The original value of <paramref name="member"/>.</returns>
+            <example>
+            <code language="csharp">
+            Throws.IfNullOrMemberNull(myObject, myObject?.MyProperty)
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfMemberNull``2(``0,``1,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException" /> if the specified member is <see langword="null"/>.
+            </summary>
+            <typeparam name="TParameter">Argument type.</typeparam>
+            <typeparam name="TMember">Member type to be checked for <see langword="null"/>.</typeparam>
+            <param name="argument">Argument to which member belongs.</param>
+            <param name="member">Object member to be checked for <see langword="null"/>.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <param name="memberName">The name of the member.</param>
+            <returns>The original value of <paramref name="member"/>.</returns>
+            <example>
+            <code language="csharp">
+            Throws.IfMemberNull(myObject, myObject.MyProperty)
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfNullOrWhitespace(System.String,System.String)">
+            <summary>
+            Throws either an <see cref="T:System.ArgumentNullException"/> or an <see cref="T:System.ArgumentException"/>
+            if the specified string is <see langword="null"/> or whitespace respectively.
+            </summary>
+            <param name="argument">String to be checked for <see langword="null"/> or whitespace.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfNullOrEmpty(System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> if the string is <see langword="null"/>,
+            or <see cref="T:System.ArgumentException"/> if it is empty.
+            </summary>
+            <param name="argument">String to be checked for <see langword="null"/> or empty.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfBufferTooSmall(System.Int32,System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException"/> if the argument's buffer size is less than the required buffer size.
+            </summary>
+            <param name="bufferSize">The actual buffer size.</param>
+            <param name="requiredSize">The required buffer size.</param>
+            <param name="paramName">The name of the parameter to be checked.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfOutOfRange``1(``0,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the enum value is not valid.
+            </summary>
+            <param name="argument">The argument to evaluate.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <typeparam name="T">The type of the enumeration.</typeparam>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> if the collection is <see langword="null"/>,
+            or <see cref="T:System.ArgumentException"/> if it is empty.
+            </summary>
+            <param name="argument">The collection to evaluate.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <typeparam name="T">The type of objects in the collection.</typeparam>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentNullException(System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentNullException(System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentOutOfRangeException(System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentOutOfRangeException(System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentOutOfRangeException(System.String,System.Object,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+            <param name="actualValue">The value of the argument that caused this exception.</param>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentException(System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.ArgumentException(System.String,System.String,System.Exception)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException"/>.
+            </summary>
+            <param name="paramName">The name of the parameter that caused the exception.</param>
+            <param name="message">A message that describes the error.</param>
+            <param name="innerException">The exception that is the cause of the current exception.</param>
+            <remarks>
+            If the <paramref name="innerException"/> is not a <see langword="null"/>, the current exception is raised in a catch
+            block that handles the inner exception.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.InvalidOperationException(System.String)">
+            <summary>
+            Throws an <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.InvalidOperationException(System.String,System.Exception)">
+            <summary>
+            Throws an <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+            <param name="message">A message that describes the error.</param>
+            <param name="innerException">The exception that is the cause of the current exception.</param>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThan(System.Int32,System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>  if the specified number is less than min.
+            </summary>
+            <param name="argument">Number to be expected being less than min.</param>
+            <param name="min">The number that must be less than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThan(System.Int32,System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater than max.
+            </summary>
+            <param name="argument">Number to be expected being greater than max.</param>
+            <param name="max">The number that must be greater than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThanOrEqual(System.Int32,System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is less or equal than min.
+            </summary>
+            <param name="argument">Number to be expected being less or equal than min.</param>
+            <param name="min">The number that must be less or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThanOrEqual(System.Int32,System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater or equal than max.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="max">The number that must be greater or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfOutOfRange(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is not in the specified range.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="min">The lower bound of the allowed range of argument values.</param>
+            <param name="max">The upper bound of the allowed range of argument values.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfZero(System.Int32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is equal to 0.
+            </summary>
+            <param name="argument">Number to be expected being not equal to zero.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThan(System.UInt32,System.UInt32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>  if the specified number is less than min.
+            </summary>
+            <param name="argument">Number to be expected being less than min.</param>
+            <param name="min">The number that must be less than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThan(System.UInt32,System.UInt32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater than max.
+            </summary>
+            <param name="argument">Number to be expected being greater than max.</param>
+            <param name="max">The number that must be greater than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThanOrEqual(System.UInt32,System.UInt32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is less or equal than min.
+            </summary>
+            <param name="argument">Number to be expected being less or equal than min.</param>
+            <param name="min">The number that must be less or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThanOrEqual(System.UInt32,System.UInt32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater or equal than max.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="max">The number that must be greater or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfOutOfRange(System.UInt32,System.UInt32,System.UInt32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is not in the specified range.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="min">The lower bound of the allowed range of argument values.</param>
+            <param name="max">The upper bound of the allowed range of argument values.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfZero(System.UInt32,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is equal to 0.
+            </summary>
+            <param name="argument">Number to be expected being not equal to zero.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThan(System.Int64,System.Int64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>  if the specified number is less than min.
+            </summary>
+            <param name="argument">Number to be expected being less than min.</param>
+            <param name="min">The number that must be less than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThan(System.Int64,System.Int64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater than max.
+            </summary>
+            <param name="argument">Number to be expected being greater than max.</param>
+            <param name="max">The number that must be greater than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThanOrEqual(System.Int64,System.Int64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is less or equal than min.
+            </summary>
+            <param name="argument">Number to be expected being less or equal than min.</param>
+            <param name="min">The number that must be less or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThanOrEqual(System.Int64,System.Int64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater or equal than max.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="max">The number that must be greater or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfOutOfRange(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is not in the specified range.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="min">The lower bound of the allowed range of argument values.</param>
+            <param name="max">The upper bound of the allowed range of argument values.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfZero(System.Int64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is equal to 0.
+            </summary>
+            <param name="argument">Number to be expected being not equal to zero.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThan(System.UInt64,System.UInt64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/>  if the specified number is less than min.
+            </summary>
+            <param name="argument">Number to be expected being less than min.</param>
+            <param name="min">The number that must be less than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThan(System.UInt64,System.UInt64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater than max.
+            </summary>
+            <param name="argument">Number to be expected being greater than max.</param>
+            <param name="max">The number that must be greater than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThanOrEqual(System.UInt64,System.UInt64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is less or equal than min.
+            </summary>
+            <param name="argument">Number to be expected being less or equal than min.</param>
+            <param name="min">The number that must be less or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThanOrEqual(System.UInt64,System.UInt64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater or equal than max.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="max">The number that must be greater or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfOutOfRange(System.UInt64,System.UInt64,System.UInt64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is not in the specified range.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="min">The lower bound of the allowed range of argument values.</param>
+            <param name="max">The upper bound of the allowed range of argument values.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfZero(System.UInt64,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is equal to 0.
+            </summary>
+            <param name="argument">Number to be expected being not equal to zero.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThan(System.Double,System.Double,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is less than min.
+            </summary>
+            <param name="argument">Number to be expected being less than min.</param>
+            <param name="min">The number that must be less than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThan(System.Double,System.Double,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater than max.
+            </summary>
+            <param name="argument">Number to be expected being greater than max.</param>
+            <param name="max">The number that must be greater than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfLessThanOrEqual(System.Double,System.Double,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is less or equal than min.
+            </summary>
+            <param name="argument">Number to be expected being less or equal than min.</param>
+            <param name="min">The number that must be less or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfGreaterThanOrEqual(System.Double,System.Double,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is greater or equal than max.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="max">The number that must be greater or equal than the argument.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfOutOfRange(System.Double,System.Double,System.Double,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is not in the specified range.
+            </summary>
+            <param name="argument">Number to be expected being greater or equal than max.</param>
+            <param name="min">The lower bound of the allowed range of argument values.</param>
+            <param name="max">The upper bound of the allowed range of argument values.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Shared.Diagnostics.Throw.IfZero(System.Double,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if the specified number is equal to 0.
+            </summary>
+            <param name="argument">Number to be expected being not equal to zero.</param>
+            <param name="paramName">The name of the parameter being checked.</param>
+            <returns>The original value of <paramref name="argument"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIAssistantsChatClient">
+            <summary>Represents an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for an OpenAI <see cref="T:OpenAI.Assistants.AssistantClient"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIAssistantsChatClient._client">
+            <summary>The underlying <see cref="T:OpenAI.Assistants.AssistantClient" />.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIAssistantsChatClient._metadata">
+            <summary>Metadata for the client.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIAssistantsChatClient._assistantId">
+            <summary>The ID of the agent to use.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIAssistantsChatClient._defaultThreadId">
+            <summary>The thread ID to use if none is supplied in <see cref="P:Microsoft.Extensions.AI.ChatOptions.ConversationId"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIAssistantsChatClient._assistantTools">
+            <summary>List of tools associated with the assistant.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.#ctor(OpenAI.Assistants.AssistantClient,System.String,System.String)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAIAssistantsChatClient"/> class for the specified <see cref="T:OpenAI.Assistants.AssistantClient"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.#ctor(OpenAI.Assistants.AssistantClient,OpenAI.Assistants.Assistant,System.String)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAIAssistantsChatClient"/> class for the specified <see cref="T:OpenAI.Assistants.AssistantClient"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.System#IDisposable#Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.ToOpenAIAssistantsFunctionToolDefinition(Microsoft.Extensions.AI.AIFunctionDeclaration,Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Converts an Extensions function to an OpenAI assistants function tool.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.CreateRunOptionsAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <summary>
+            Creates the <see cref="T:OpenAI.Assistants.RunCreationOptions"/> to use for the request and extracts any function result contents 
+            that need to be submitted as tool results.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.ConvertFunctionResultsToToolOutput(System.Collections.Generic.List{Microsoft.Extensions.AI.FunctionResultContent},System.Collections.Generic.List{OpenAI.Assistants.ToolOutput}@)">
+            <summary>Convert <see cref="T:Microsoft.Extensions.AI.FunctionResultContent"/> instances to <see cref="T:OpenAI.Assistants.ToolOutput"/> instances.</summary>
+            <param name="toolResults">The tool results to process.</param>
+            <param name="toolOutputs">The generated list of tool outputs, if any could be created.</param>
+            <returns>The run ID associated with the corresponding function call requests.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIAssistantsChatClient.ToolDefinitionNameEqualityComparer">
+            <summary>
+            Provides the same behavior as <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>, except
+            for <see cref="T:OpenAI.Assistants.FunctionToolDefinition"/> it compares names so that two function tool definitions with the
+            same name compare equally.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIChatClient">
+            <summary>Represents an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for an OpenAI <see cref="T:OpenAI.OpenAIClient"/> or <see cref="T:OpenAI.Chat.ChatClient"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIChatClient._metadata">
+            <summary>Metadata about the client.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIChatClient._chatClient">
+            <summary>The underlying <see cref="T:OpenAI.Chat.ChatClient" />.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.#ctor(OpenAI.Chat.ChatClient)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAIChatClient"/> class for the specified <see cref="T:OpenAI.Chat.ChatClient"/>.</summary>
+            <param name="chatClient">The underlying client.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="chatClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.Microsoft#Extensions#AI#IChatClient#GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.System#IDisposable#Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.ToOpenAIChatTool(Microsoft.Extensions.AI.AIFunctionDeclaration,Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Converts an Extensions function to an OpenAI chat tool.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.ToOpenAIChatMessages(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Converts an Extensions chat message enumerable to an OpenAI chat message enumerable.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.ToOpenAIChatContent(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.AIContent})">
+            <summary>Converts a list of <see cref="T:Microsoft.Extensions.AI.AIContent"/> to a list of <see cref="T:OpenAI.Chat.ChatMessageContentPart"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.ToOpenAIOptions(Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Converts an extensions options instance to an OpenAI options instance.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.FromOpenAIChatRole(OpenAI.Chat.ChatMessageRole)">
+            <summary>Converts an OpenAI role to an Extensions role.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.ConvertContentParts(OpenAI.Chat.ChatMessageContent,System.Collections.Generic.IList{Microsoft.Extensions.AI.AIContent})">
+            <summary>Creates <see cref="T:Microsoft.Extensions.AI.AIContent"/>s from <see cref="T:OpenAI.Chat.ChatMessageContent"/>.</summary>
+            <param name="content">The content parts to convert into a content.</param>
+            <param name="results">The result collection into which to write the resulting content.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.ToAIContent(OpenAI.Chat.ChatMessageContentPart)">
+            <summary>Creates an <see cref="T:Microsoft.Extensions.AI.AIContent"/> from a <see cref="T:OpenAI.Chat.ChatMessageContentPart"/>.</summary>
+            <param name="contentPart">The content part to convert into a content.</param>
+            <returns>The constructed <see cref="T:Microsoft.Extensions.AI.AIContent"/>, or <see langword="null"/> if the content part could not be converted.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.FromOpenAIFinishReason(System.Nullable{OpenAI.Chat.ChatFinishReason})">
+            <summary>Converts an OpenAI finish reason to an Extensions finish reason.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.SanitizeAuthorName(System.String)">
+            <summary>Sanitizes the author name to be appropriate for including as an OpenAI participant name.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIChatClient.FunctionCallInfo">
+            <summary>POCO representing function calling info. Used to concatenation information for a single function call from across multiple streaming updates.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIChatClient.InvalidAuthorNameRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>[^a-zA-Z0-9_]+</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match a character in the set [^0-9A-Z_a-z] atomically at least once.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIClientExtensions">
+            <summary>Provides extension methods for working with <see cref="T:OpenAI.OpenAIClient"/>s.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIClientExtensions.StrictKey">
+            <summary>Key into AdditionalProperties used to store a strict option.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIClientExtensions.DefaultOpenAIEndpoint">
+            <summary>Gets the default OpenAI endpoint.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIClientExtensions.ChatRoleDeveloper">
+            <summary>Gets a <see cref="T:Microsoft.Extensions.AI.ChatRole"/> for "developer".</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIClientExtensions.PythonMediaType">
+            <summary>Gets the media type for Python code content.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIClientExtensions.StrictSchemaTransformCache">
+            <summary>
+            Gets the JSON schema transformer cache conforming to OpenAI <b>strict</b> / structured output restrictions per
+            https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses#supported-schemas.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Chat.ChatClient)">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for use with this <see cref="T:OpenAI.Chat.ChatClient"/>.</summary>
+            <param name="chatClient">The client.</param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.IChatClient"/> that can be used to converse via the <see cref="T:OpenAI.Chat.ChatClient"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="chatClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Responses.ResponsesClient)">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for use with this <see cref="T:OpenAI.Responses.ResponsesClient"/>.</summary>
+            <param name="responseClient">The client.</param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.IChatClient"/> that can be used to converse via the <see cref="T:OpenAI.Responses.ResponsesClient"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="responseClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Assistants.AssistantClient,System.String,System.String)">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for use with this <see cref="T:OpenAI.Assistants.AssistantClient"/>.</summary>
+            <param name="assistantClient">The <see cref="T:OpenAI.Assistants.AssistantClient"/> instance to be accessed as an <see cref="T:Microsoft.Extensions.AI.IChatClient"/>.</param>
+            <param name="assistantId">The unique identifier of the assistant with which to interact.</param>
+            <param name="threadId">
+            An optional existing thread identifier for the chat session. This serves as a default, and may be overridden per call to
+            <see cref="M:Microsoft.Extensions.AI.IChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)"/> or <see cref="M:Microsoft.Extensions.AI.IChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)"/> via the <see cref="P:Microsoft.Extensions.AI.ChatOptions.ConversationId"/>
+            property. If no thread ID is provided via either mechanism, a new thread will be created for the request.
+            </param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.IChatClient"/> instance configured to interact with the specified agent and thread.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="assistantClient"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="assistantId"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="assistantId"/> is empty or composed entirely of whitespace.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Assistants.AssistantClient,OpenAI.Assistants.Assistant,System.String)">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for use with this <see cref="T:OpenAI.Assistants.AssistantClient"/>.</summary>
+            <param name="assistantClient">The <see cref="T:OpenAI.Assistants.AssistantClient"/> instance to be accessed as an <see cref="T:Microsoft.Extensions.AI.IChatClient"/>.</param>
+            <param name="assistant">The <see cref="T:OpenAI.Assistants.Assistant"/> with which to interact.</param>
+            <param name="threadId">
+            An optional existing thread identifier for the chat session. This serves as a default, and may be overridden per call to
+            <see cref="M:Microsoft.Extensions.AI.IChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)"/> or <see cref="M:Microsoft.Extensions.AI.IChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)"/> via the <see cref="P:Microsoft.Extensions.AI.ChatOptions.ConversationId"/>
+            property. If no thread ID is provided via either mechanism, a new thread will be created for the request.
+            </param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.IChatClient"/> instance configured to interact with the specified agent and thread.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="assistantClient"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="assistant"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsISpeechToTextClient(OpenAI.Audio.AudioClient)">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.ISpeechToTextClient"/> for use with this <see cref="T:OpenAI.Audio.AudioClient"/>.</summary>
+            <param name="audioClient">The client.</param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.ISpeechToTextClient"/> that can be used to transcribe audio via the <see cref="T:OpenAI.Audio.AudioClient"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="audioClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIImageGenerator(OpenAI.Images.ImageClient)">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.IImageGenerator"/> for use with this <see cref="T:OpenAI.Images.ImageClient"/>.</summary>
+            <param name="imageClient">The client.</param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.IImageGenerator"/> that can be used to generate images via the <see cref="T:OpenAI.Images.ImageClient"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="imageClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIEmbeddingGenerator(OpenAI.Embeddings.EmbeddingClient,System.Nullable{System.Int32})">
+            <summary>Gets an <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator`2"/> for use with this <see cref="T:OpenAI.Embeddings.EmbeddingClient"/>.</summary>
+            <param name="embeddingClient">The client.</param>
+            <param name="defaultModelDimensions">The number of dimensions to generate in each embedding.</param>
+            <returns>An <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator`2"/> that can be used to generate embeddings via the <see cref="T:OpenAI.Embeddings.EmbeddingClient"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="embeddingClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.HasStrict(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})">
+            <summary>Gets whether the properties specify that strict schema handling is desired.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.ToOpenAIFunctionParameters(Microsoft.Extensions.AI.AIFunctionDeclaration,System.Nullable{System.Boolean})">
+            <summary>Extracts from an <see cref="T:Microsoft.Extensions.AI.AIFunctionDeclaration"/> the parameters and strictness setting for use with OpenAI's APIs.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.ParseCallContent(System.String,System.String,System.String)">
+            <summary>Creates a new instance of <see cref="T:Microsoft.Extensions.AI.FunctionCallContent"/> parsing arguments using a specified encoding and parser.</summary>
+            <param name="json">The input arguments to be parsed.</param>
+            <param name="callId">The function call ID.</param>
+            <param name="name">The function name.</param>
+            <returns>A new instance of <see cref="T:Microsoft.Extensions.AI.FunctionCallContent"/> containing the parse result.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="callId"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.ParseCallContent(System.BinaryData,System.String,System.String)">
+            <summary>Creates a new instance of <see cref="T:Microsoft.Extensions.AI.FunctionCallContent"/> parsing arguments using a specified encoding and parser.</summary>
+            <param name="utf8json">The input arguments to be parsed.</param>
+            <param name="callId">The function call ID.</param>
+            <param name="name">The function name.</param>
+            <returns>A new instance of <see cref="T:Microsoft.Extensions.AI.FunctionCallContent"/> containing the parse result.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="callId"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.ImageUriToMediaType(System.Uri)">
+            <summary>Gets a media type for an image based on the file extension in the provided URI.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.PatchModelIfNotSet(System.ClientModel.Primitives.JsonPatch@,System.String)">
+            <summary>Sets $.model in <paramref name="patch"/> to <paramref name="modelId"/> if not already set.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.GetProperty``1(Microsoft.Extensions.AI.AITool,System.String)">
+            <summary>Gets the typed property of the specified name from the tool's <see cref="P:Microsoft.Extensions.AI.AITool.AdditionalProperties"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIClientExtensions.IsConversationId(System.String)">
+            <summary>Gets whether an ID is an OpenAI conversation ID.</summary>
+            <remarks>
+            Technically, OpenAI's IDs are opaque. However, by convention conversation IDs start with "conv_" and
+            we can use that to disambiguate whether we're looking at a conversation ID or something else, like a response ID.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIClientExtensions.ToolJson">
+            <summary>Used to create the JSON payload for an OpenAI tool description.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator">
+            <summary>An <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator`2"/> for an OpenAI <see cref="T:OpenAI.Embeddings.EmbeddingClient"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator._metadata">
+            <summary>Metadata about the embedding generator.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator._embeddingClient">
+            <summary>The underlying <see cref="T:OpenAI.Chat.ChatClient" />.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator._dimensions">
+            <summary>The number of dimensions produced by the generator.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator.#ctor(OpenAI.Embeddings.EmbeddingClient,System.Nullable{System.Int32})">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator"/> class.</summary>
+            <param name="embeddingClient">The underlying client.</param>
+            <param name="defaultModelDimensions">The number of dimensions to generate in each embedding.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="embeddingClient"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="defaultModelDimensions"/> is not positive.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator.GenerateAsync(System.Collections.Generic.IEnumerable{System.String},Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator.System#IDisposable#Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator.Microsoft#Extensions#AI#IEmbeddingGenerator#GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIEmbeddingGenerator.ToOpenAIOptions(Microsoft.Extensions.AI.EmbeddingGenerationOptions)">
+            <summary>Converts an extensions options instance to an OpenAI options instance.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIImageGenerator">
+            <summary>Represents an <see cref="T:Microsoft.Extensions.AI.IImageGenerator"/> for an OpenAI <see cref="T:OpenAI.OpenAIClient"/> or <see cref="T:OpenAI.Images.ImageClient"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIImageGenerator._metadata">
+            <summary>Metadata about the client.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIImageGenerator._imageClient">
+            <summary>The underlying <see cref="T:OpenAI.Images.ImageClient" />.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.#ctor(OpenAI.Images.ImageClient)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAIImageGenerator"/> class for the specified <see cref="T:OpenAI.Images.ImageClient"/>.</summary>
+            <param name="imageClient">The underlying client.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="imageClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.GenerateAsync(Microsoft.Extensions.AI.ImageGenerationRequest,Microsoft.Extensions.AI.ImageGenerationOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.System#IDisposable#Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.ToOpenAIImageSize(System.Nullable{System.Drawing.Size})">
+            <summary>
+            Converts a <see cref="T:System.Drawing.Size"/> to an OpenAI <see cref="T:OpenAI.Images.GeneratedImageSize"/>.
+            </summary>
+            <param name="requestedSize">User's requested size.</param>
+            <returns>Closest supported size.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.ToImageGenerationResponse(OpenAI.Images.GeneratedImageCollection)">
+            <summary>Converts a <see cref="T:OpenAI.Images.GeneratedImageCollection"/> to a <see cref="T:Microsoft.Extensions.AI.ImageGenerationResponse"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.ToOpenAIImageGenerationOptions(Microsoft.Extensions.AI.ImageGenerationOptions)">
+            <summary>Converts a <see cref="T:Microsoft.Extensions.AI.ImageGenerationOptions"/> to a <see cref="T:OpenAI.Images.ImageGenerationOptions"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIImageGenerator.ToOpenAIImageEditOptions(Microsoft.Extensions.AI.ImageGenerationOptions)">
+            <summary>Converts a <see cref="T:Microsoft.Extensions.AI.ImageGenerationOptions"/> to a <see cref="T:OpenAI.Images.ImageEditOptions"/>.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIJsonContext">
+            <summary>Source-generated JSON type information for use by all OpenAI implementations.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.Boolean">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.ToolJson">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.FunctionToolCallOutputElement">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.DictionaryStringJsonElement">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.HashSetString">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.IDictionaryStringObject">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.IEnumerableString">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.IReadOnlyDictionaryStringObject">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.ListFunctionToolCallOutputElement">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.JsonElement">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.Object">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.StringArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.OpenAIJsonContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIJsonContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIJsonContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIJsonContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIRealtimeConversationClient">
+            <summary>Provides helpers for interacting with OpenAI Realtime.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIResponsesChatClient">
+            <summary>Represents an <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for an <see cref="T:OpenAI.Responses.ResponsesClient"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIResponsesChatClient._metadata">
+            <summary>Metadata about the client.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAIResponsesChatClient._responseClient">
+            <summary>The underlying <see cref="T:OpenAI.Responses.ResponsesClient" />.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.#ctor(OpenAI.Responses.ResponsesClient)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAIResponsesChatClient"/> class for the specified <see cref="T:OpenAI.Responses.ResponsesClient"/>.</summary>
+            <param name="responseClient">The underlying client.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="responseClient"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.Microsoft#Extensions#AI#IChatClient#GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.System#IDisposable#Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.AsChatRole(System.Nullable{OpenAI.Responses.MessageRole})">
+            <summary>Creates a <see cref="T:Microsoft.Extensions.AI.ChatRole"/> from a <see cref="T:OpenAI.Responses.MessageRole"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.AsFinishReason(System.Nullable{OpenAI.Responses.ResponseIncompleteStatusReason})">
+            <summary>Creates a <see cref="T:Microsoft.Extensions.AI.ChatFinishReason"/> from a <see cref="T:OpenAI.Responses.ResponseIncompleteStatusReason"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.AsCreateResponseOptions(Microsoft.Extensions.AI.ChatOptions,System.String@)">
+            <summary>Converts a <see cref="T:Microsoft.Extensions.AI.ChatOptions"/> to a <see cref="T:OpenAI.Responses.CreateResponseOptions"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ToOpenAIResponseItems(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Convert a sequence of <see cref="T:Microsoft.Extensions.AI.ChatMessage"/>s to <see cref="T:OpenAI.Responses.ResponseItem"/>s.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ToUsageDetails(OpenAI.Responses.ResponseResult)">
+            <summary>Extract usage details from a <see cref="T:OpenAI.Responses.ResponseResult"/> into a <see cref="T:Microsoft.Extensions.AI.UsageDetails"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ToResponseTokenUsage(Microsoft.Extensions.AI.UsageDetails)">
+            <summary>Converts a <see cref="T:Microsoft.Extensions.AI.UsageDetails"/> to a <see cref="T:OpenAI.Responses.ResponseTokenUsage"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ToAIContents(System.Collections.Generic.IEnumerable{OpenAI.Responses.ResponseContentPart})">
+            <summary>Convert a sequence of <see cref="T:OpenAI.Responses.ResponseContentPart"/>s to a list of <see cref="T:Microsoft.Extensions.AI.AIContent"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.PopulateAnnotations(OpenAI.Responses.ResponseContentPart,Microsoft.Extensions.AI.AIContent)">
+            <summary>Converts any annotations from <paramref name="source"/> and stores them in <paramref name="destination"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.AddMcpToolCallContent(OpenAI.Responses.McpToolCallItem,System.Collections.Generic.IList{Microsoft.Extensions.AI.AIContent})">
+            <summary>Adds new <see cref="T:Microsoft.Extensions.AI.AIContent"/> for the specified <paramref name="mtci"/> into <paramref name="contents"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.AddAllMcpFilters(System.Collections.Generic.IList{System.String},OpenAI.Responses.McpToolFilter)">
+            <summary>Adds all of the tool names from <paramref name="toolNames"/> to <paramref name="filter"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.CreateCodeInterpreterResultContent(OpenAI.Responses.CodeInterpreterCallResponseItem)">
+            <summary>Creates a <see cref="T:Microsoft.Extensions.AI.CodeInterpreterToolResultContent"/> for the specified <paramref name="cicri"/>.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ResponseToolAITool">
+            <summary>Provides an <see cref="T:Microsoft.Extensions.AI.AITool"/> wrapper for a <see cref="T:OpenAI.Responses.ResponseTool"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ResponseToolAITool.#ctor(OpenAI.Responses.ResponseTool)">
+            <summary>Provides an <see cref="T:Microsoft.Extensions.AI.AITool"/> wrapper for a <see cref="T:OpenAI.Responses.ResponseTool"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAIResponsesChatClient.ResponseToolAITool.GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAIResponsesChatClient.FunctionToolCallOutputElement">
+            <summary>DTO for an array element in OpenAI Responses' "Function tool call output".</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.OpenAISpeechToTextClient">
+            <summary>Represents an <see cref="T:Microsoft.Extensions.AI.ISpeechToTextClient"/> for an OpenAI <see cref="T:OpenAI.OpenAIClient"/> or <see cref="T:OpenAI.Audio.AudioClient"/>.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAISpeechToTextClient.Filename">
+            <summary>Filename to use when audio lacks a name.</summary>
+            <remarks>This information internally is required but is only being used to create a header name in the multipart request.</remarks>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAISpeechToTextClient._metadata">
+            <summary>Metadata about the client.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.OpenAISpeechToTextClient._audioClient">
+            <summary>The underlying <see cref="T:OpenAI.Audio.AudioClient" />.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.#ctor(OpenAI.Audio.AudioClient)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.OpenAISpeechToTextClient"/> class for the specified <see cref="T:OpenAI.Audio.AudioClient"/>.</summary>
+            <param name="audioClient">The underlying client.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.GetService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.GetTextAsync(System.IO.Stream,Microsoft.Extensions.AI.SpeechToTextOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.GetStreamingTextAsync(System.IO.Stream,Microsoft.Extensions.AI.SpeechToTextOptions,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.System#IDisposable#Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.ToOpenAITranscriptionOptions(Microsoft.Extensions.AI.SpeechToTextOptions)">
+            <summary>Converts an extensions options instance to an OpenAI transcription options instance.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.OpenAISpeechToTextClient.ToOpenAITranslationOptions(Microsoft.Extensions.AI.SpeechToTextOptions)">
+            <summary>Converts an extensions options instance to an OpenAI translation options instance.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.RequestOptionsExtensions">
+            <summary>Provides utility methods for creating <see cref="T:System.ClientModel.Primitives.RequestOptions"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.RequestOptionsExtensions.ToRequestOptions(System.Threading.CancellationToken,System.Boolean)">
+            <summary>Creates a <see cref="T:System.ClientModel.Primitives.RequestOptions"/> configured for use with OpenAI.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.RequestOptionsExtensions.MeaiUserAgentPolicy">
+            <summary>Provides a pipeline policy that adds a "MEAI/x.y.z" user-agent header.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.ResponsesClientContinuationToken">
+            <summary>Represents a continuation token for OpenAI responses.</summary>
+            <remarks>
+            The token is used for resuming streamed background responses and continuing
+            non-streamed background responses until completion.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.ResponsesClientContinuationToken.#ctor(System.String)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.ResponsesClientContinuationToken"/> class.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.ResponsesClientContinuationToken.ResponseId">
+            <summary>Gets the Id of the response.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.ResponsesClientContinuationToken.SequenceNumber">
+            <summary>Gets or sets the sequence number of a streamed update.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.ResponsesClientContinuationToken.ToBytes">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.ResponsesClientContinuationToken.FromToken(Microsoft.Extensions.AI.ResponseContinuationToken)">
+            <summary>Create a new instance of <see cref="T:Microsoft.Extensions.AI.ResponsesClientContinuationToken"/> from the provided <paramref name="token"/>.
+            </summary>
+            <param name="token">The token to create the <see cref="T:Microsoft.Extensions.AI.ResponsesClientContinuationToken"/> from.</param>
+            <returns>A <see cref="T:Microsoft.Extensions.AI.ResponsesClientContinuationToken"/> equivalent of the provided <paramref name="token"/>.</returns>
+        </member>
+        <member name="T:OpenAI.Assistants.MicrosoftExtensionsAIAssistantsExtensions">
+            <summary>Provides extension methods for working with content associated with OpenAI.Assistants.</summary>
+        </member>
+        <member name="M:OpenAI.Assistants.MicrosoftExtensionsAIAssistantsExtensions.AsOpenAIAssistantsFunctionToolDefinition(Microsoft.Extensions.AI.AIFunctionDeclaration)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Assistants.FunctionToolDefinition"/> from an <see cref="T:Microsoft.Extensions.AI.AIFunctionDeclaration"/>.</summary>
+            <param name="function">The function to convert.</param>
+            <returns>An OpenAI <see cref="T:OpenAI.Assistants.FunctionToolDefinition"/> representing <paramref name="function"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="function"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions">
+            <summary>Provides extension methods for working with content associated with OpenAI.Chat.</summary>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatTool(Microsoft.Extensions.AI.AIFunctionDeclaration)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Chat.ChatTool"/> from an <see cref="T:Microsoft.Extensions.AI.AIFunctionDeclaration"/>.</summary>
+            <param name="function">The function to convert.</param>
+            <returns>An OpenAI <see cref="T:OpenAI.Chat.ChatTool"/> representing <paramref name="function"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="function"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatResponseFormat(Microsoft.Extensions.AI.ChatResponseFormat,Microsoft.Extensions.AI.ChatOptions)">
+            <summary>
+            Creates an OpenAI <see cref="T:OpenAI.Chat.ChatResponseFormat"/> from a <see cref="T:Microsoft.Extensions.AI.ChatResponseFormat"/>.
+            </summary>
+            <param name="format">The format.</param>
+            <param name="options">The options to use when interpreting the format.</param>
+            <returns>The converted OpenAI <see cref="T:OpenAI.Chat.ChatResponseFormat"/>.</returns>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatMessages(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Creates a sequence of OpenAI <see cref="T:OpenAI.Chat.ChatMessage"/> instances from the specified input messages.</summary>
+            <param name="messages">The input messages to convert.</param>
+            <param name="options">The options employed while processing <paramref name="messages"/>.</param>
+            <returns>A sequence of OpenAI chat messages.</returns>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatCompletion(Microsoft.Extensions.AI.ChatResponse)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Chat.ChatCompletion"/> from a <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>.</summary>
+            <param name="response">The <see cref="T:Microsoft.Extensions.AI.ChatResponse"/> to convert to a <see cref="T:OpenAI.Chat.ChatCompletion"/>.</param>
+            <returns>A converted <see cref="T:OpenAI.Chat.ChatCompletion"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="response"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIStreamingChatCompletionUpdatesAsync(System.Collections.Generic.IAsyncEnumerable{Microsoft.Extensions.AI.ChatResponseUpdate},System.Threading.CancellationToken)">
+            <summary>
+            Creates a sequence of OpenAI <see cref="T:OpenAI.Chat.StreamingChatCompletionUpdate"/> instances from the specified
+            sequence of <see cref="T:Microsoft.Extensions.AI.ChatResponseUpdate"/> instances.
+            </summary>
+            <param name="responseUpdates">The update instances.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
+            <returns>A sequence of converted <see cref="T:Microsoft.Extensions.AI.ChatResponseUpdate"/> instances.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="responseUpdates"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsChatMessages(System.Collections.Generic.IEnumerable{OpenAI.Chat.ChatMessage})">
+            <summary>Creates a sequence of <see cref="T:Microsoft.Extensions.AI.ChatMessage"/> instances from the specified input messages.</summary>
+            <param name="messages">The input messages to convert.</param>
+            <returns>A sequence of Microsoft.Extensions.AI chat messages.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="messages"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsChatResponse(OpenAI.Chat.ChatCompletion,OpenAI.Chat.ChatCompletionOptions)">
+            <summary>Creates a Microsoft.Extensions.AI <see cref="T:Microsoft.Extensions.AI.ChatResponse"/> from a <see cref="T:OpenAI.Chat.ChatCompletion"/>.</summary>
+            <param name="chatCompletion">The <see cref="T:OpenAI.Chat.ChatCompletion"/> to convert to a <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>.</param>
+            <param name="options">The options employed in the creation of the response.</param>
+            <returns>A converted <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="chatCompletion"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsChatResponseUpdatesAsync(System.Collections.Generic.IAsyncEnumerable{OpenAI.Chat.StreamingChatCompletionUpdate},OpenAI.Chat.ChatCompletionOptions,System.Threading.CancellationToken)">
+            <summary>
+            Creates a sequence of Microsoft.Extensions.AI <see cref="T:Microsoft.Extensions.AI.ChatResponseUpdate"/> instances from the specified
+            sequence of OpenAI <see cref="T:OpenAI.Chat.StreamingChatCompletionUpdate"/> instances.
+            </summary>
+            <param name="chatCompletionUpdates">The update instances.</param>
+            <param name="options">The options employed in the creation of the response.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
+            <returns>A sequence of converted <see cref="T:Microsoft.Extensions.AI.ChatResponseUpdate"/> instances.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="chatCompletionUpdates"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.ToChatMessageRole(System.Nullable{Microsoft.Extensions.AI.ChatRole})">
+            <summary>Converts the <see cref="T:Microsoft.Extensions.AI.ChatRole"/> to a <see cref="T:OpenAI.Chat.ChatMessageRole"/>.</summary>
+        </member>
+        <member name="M:OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.ToChatFinishReason(System.Nullable{Microsoft.Extensions.AI.ChatFinishReason})">
+            <summary>Converts the <see cref="T:Microsoft.Extensions.AI.ChatFinishReason"/> to a <see cref="T:OpenAI.Chat.ChatFinishReason"/>.</summary>
+        </member>
+        <member name="T:OpenAI.Realtime.MicrosoftExtensionsAIRealtimeExtensions">
+            <summary>Provides extension methods for working with content associated with OpenAI.Realtime.</summary>
+        </member>
+        <member name="M:OpenAI.Realtime.MicrosoftExtensionsAIRealtimeExtensions.AsOpenAIConversationFunctionTool(Microsoft.Extensions.AI.AIFunctionDeclaration)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Realtime.ConversationFunctionTool"/> from an <see cref="T:Microsoft.Extensions.AI.AIFunctionDeclaration"/>.</summary>
+            <param name="function">The function to convert.</param>
+            <returns>An OpenAI <see cref="T:OpenAI.Realtime.ConversationFunctionTool"/> representing <paramref name="function"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="function"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions">
+            <summary>Provides extension methods for working with content associated with OpenAI.Responses.</summary>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsOpenAIResponseTool(Microsoft.Extensions.AI.AIFunctionDeclaration)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Responses.ResponseTool"/> from an <see cref="T:Microsoft.Extensions.AI.AIFunctionDeclaration"/>.</summary>
+            <param name="function">The function to convert.</param>
+            <returns>An OpenAI <see cref="T:OpenAI.Responses.ResponseTool"/> representing <paramref name="function"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="function"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsOpenAIResponseTool(Microsoft.Extensions.AI.AITool)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Responses.ResponseTool"/> from an <see cref="T:Microsoft.Extensions.AI.AITool"/>.</summary>
+            <param name="tool">The tool to convert.</param>
+            <returns>An OpenAI <see cref="T:OpenAI.Responses.ResponseTool"/> representing <paramref name="tool"/> or <see langword="null"/> if there is no mapping.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="tool"/> is <see langword="null"/>.</exception>
+            <remarks>
+            This method is only able to create <see cref="T:OpenAI.Responses.ResponseTool"/>s for <see cref="T:Microsoft.Extensions.AI.AITool"/> types
+            it's aware of, namely all of those available from the Microsoft.Extensions.AI.Abstractions library.
+            </remarks>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsOpenAIResponseTextFormat(Microsoft.Extensions.AI.ChatResponseFormat,Microsoft.Extensions.AI.ChatOptions)">
+            <summary>
+            Creates an OpenAI <see cref="T:OpenAI.Responses.ResponseTextFormat"/> from a <see cref="T:Microsoft.Extensions.AI.ChatResponseFormat"/>.
+            </summary>
+            <param name="format">The format.</param>
+            <param name="options">The options to use when interpreting the format.</param>
+            <returns>The converted OpenAI <see cref="T:OpenAI.Responses.ResponseTextFormat"/>.</returns>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsOpenAIResponseItems(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Creates a sequence of OpenAI <see cref="T:OpenAI.Responses.ResponseItem"/> instances from the specified input messages.</summary>
+            <param name="messages">The input messages to convert.</param>
+            <param name="options">The options employed while processing <paramref name="messages"/>.</param>
+            <returns>A sequence of OpenAI response items.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="messages"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsChatMessages(System.Collections.Generic.IEnumerable{OpenAI.Responses.ResponseItem})">
+            <summary>Creates a sequence of <see cref="T:Microsoft.Extensions.AI.ChatMessage"/> instances from the specified input items.</summary>
+            <param name="items">The input messages to convert.</param>
+            <returns>A sequence of <see cref="T:Microsoft.Extensions.AI.ChatMessage"/> instances.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="items"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsChatResponse(OpenAI.Responses.ResponseResult,OpenAI.Responses.CreateResponseOptions)">
+            <summary>Creates a Microsoft.Extensions.AI <see cref="T:Microsoft.Extensions.AI.ChatResponse"/> from an <see cref="T:OpenAI.Responses.ResponseResult"/>.</summary>
+            <param name="response">The <see cref="T:OpenAI.Responses.ResponseResult"/> to convert to a <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>.</param>
+            <param name="options">The options employed in the creation of the response.</param>
+            <returns>A converted <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="response"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsChatResponseUpdatesAsync(System.Collections.Generic.IAsyncEnumerable{OpenAI.Responses.StreamingResponseUpdate},OpenAI.Responses.CreateResponseOptions,System.Threading.CancellationToken)">
+            <summary>
+            Creates a sequence of Microsoft.Extensions.AI <see cref="T:Microsoft.Extensions.AI.ChatResponseUpdate"/> instances from the specified
+            sequence of OpenAI <see cref="T:OpenAI.Responses.StreamingResponseUpdate"/> instances.
+            </summary>
+            <param name="responseUpdates">The update instances.</param>
+            <param name="options">The options employed in the creation of the response.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
+            <returns>A sequence of converted <see cref="T:Microsoft.Extensions.AI.ChatResponseUpdate"/> instances.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="responseUpdates"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsOpenAIResponseResult(Microsoft.Extensions.AI.ChatResponse,Microsoft.Extensions.AI.ChatOptions)">
+            <summary>Creates an OpenAI <see cref="T:OpenAI.Responses.ResponseResult"/> from a <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>.</summary>
+            <param name="response">The response to convert.</param>
+            <param name="options">The options employed in the creation of the response.</param>
+            <returns>The created <see cref="T:OpenAI.Responses.ResponseResult"/>.</returns>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.Add(System.Collections.Generic.IList{Microsoft.Extensions.AI.AITool},OpenAI.Responses.ResponseTool)">
+            <summary>Adds the <see cref="T:OpenAI.Responses.ResponseTool"/> to the list of <see cref="T:Microsoft.Extensions.AI.AITool"/>s.</summary>
+            <param name="tools">The list of <see cref="T:Microsoft.Extensions.AI.AITool"/>s to which the provided tool should be added.</param>
+            <param name="tool">The <see cref="T:OpenAI.Responses.ResponseTool"/> to add.</param>
+            <remarks>
+            <see cref="T:OpenAI.Responses.ResponseTool"/> does not derive from <see cref="T:Microsoft.Extensions.AI.AITool"/>, so it cannot be added directly to a list of <see cref="T:Microsoft.Extensions.AI.AITool"/>s.
+            Instead, this method wraps the provided <see cref="T:OpenAI.Responses.ResponseTool"/> in an <see cref="T:Microsoft.Extensions.AI.AITool"/> and adds that to the list.
+            The <see cref="T:Microsoft.Extensions.AI.IChatClient"/> returned by <see cref="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Responses.ResponsesClient)"/> will
+            be able to unwrap the <see cref="T:OpenAI.Responses.ResponseTool"/> when it processes the list of tools and use the provided <paramref name="tool"/> as-is.
+            </remarks>
+        </member>
+        <member name="M:OpenAI.Responses.MicrosoftExtensionsAIResponsesExtensions.AsAITool(OpenAI.Responses.ResponseTool)">
+            <summary>Creates an <see cref="T:Microsoft.Extensions.AI.AITool"/> to represent a raw <see cref="T:OpenAI.Responses.ResponseTool"/>.</summary>
+            <param name="tool">The tool to wrap as an <see cref="T:Microsoft.Extensions.AI.AITool"/>.</param>
+            <returns>The <paramref name="tool"/> wrapped as an <see cref="T:Microsoft.Extensions.AI.AITool"/>.</returns>
+            <remarks>
+            <para>
+            The returned tool is only suitable for use with the <see cref="T:Microsoft.Extensions.AI.IChatClient"/> returned by
+            <see cref="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Responses.ResponsesClient)"/> (or <see cref="T:Microsoft.Extensions.AI.IChatClient"/>s that delegate
+            to such an instance). It is likely to be ignored by any other <see cref="T:Microsoft.Extensions.AI.IChatClient"/> implementation.
+            </para>
+            <para>
+            When a tool has a corresponding <see cref="T:Microsoft.Extensions.AI.AITool"/>-derived type already defined in Microsoft.Extensions.AI,
+            such as <see cref="T:Microsoft.Extensions.AI.AIFunction"/>, <see cref="T:Microsoft.Extensions.AI.HostedWebSearchTool"/>, <see cref="T:Microsoft.Extensions.AI.HostedMcpServerTool"/>, or
+            <see cref="T:Microsoft.Extensions.AI.HostedFileSearchTool"/>, those types should be preferred instead of this method, as they are more portable,
+            capable of being respected by any <see cref="T:Microsoft.Extensions.AI.IChatClient"/> implementation. This method does not attempt to
+            map the supplied <see cref="T:OpenAI.Responses.ResponseTool"/> to any of those types, it simply wraps it as-is:
+            the <see cref="T:Microsoft.Extensions.AI.IChatClient"/> returned by <see cref="M:Microsoft.Extensions.AI.OpenAIClientExtensions.AsIChatClient(OpenAI.Responses.ResponsesClient)"/> will
+            be able to unwrap the <see cref="T:OpenAI.Responses.ResponseTool"/> when it processes the list of tools.
+            </para>
+            </remarks>
+        </member>
+    </members>
+</doc>

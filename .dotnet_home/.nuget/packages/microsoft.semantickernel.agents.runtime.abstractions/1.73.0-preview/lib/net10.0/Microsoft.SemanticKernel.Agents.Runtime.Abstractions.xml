@@ -1,0 +1,1067 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.SemanticKernel.Agents.Runtime.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId">
+            <summary>
+            Agent ID uniquely identifies an agent instance within an agent runtime, including a distributed runtime.
+            It serves as the "address" of the agent instance for receiving messages.
+            </summary>\
+            <remarks>
+            See the Python equivalent:
+            <see href="https://github.com/microsoft/agent-runtime/blob/main/python/agent_runtime/core/agent_id.py">AgentId in AutoGen (Python)</see>.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.Agents.Runtime.AgentId.DefaultKey">
+            <summary>
+            The default source value used when no source is explicitly provided.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentId.Type">
+            <summary>
+            An identifier that associates an agent with a specific factory function.
+            Strings may only be composed of alphanumeric letters (a-z) and (0-9), or underscores (_).
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentId.Key">
+            <summary>
+            Agent instance identifier.
+            Strings may only be composed of alphanumeric letters (a-z) and (0-9), or underscores (_).
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/> struct.
+            </summary>
+            <param name="type">The agent type.</param>
+            <param name="key">Agent instance identifier.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.#ctor(System.ValueTuple{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/> struct from a tuple.
+            </summary>
+            <param name="kvPair">A tuple containing the agent type and key.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.#ctor(Microsoft.SemanticKernel.Agents.Runtime.AgentType,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/> struct from an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/>.
+            </summary>
+            <param name="type">The agent type.</param>
+            <param name="key">Agent instance identifier.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.FromStr(System.String)">
+            <summary>
+            Convert a string of the format "type/key" into an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+            <param name="maybeAgentId">The agent ID string.</param>
+            <returns>An instance of <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.ToString">
+            <summary>
+            Returns the string representation of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+            <returns>A string in the format "type/key".</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.Equals(System.Object)">
+            <summary>
+            Determines whether the specified object is equal to the current <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns><c>true</c> if the specified object is equal to the current <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.Equals(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.GetHashCode">
+            <summary>
+            Returns a hash code for this <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+            <returns>A hash code for the current instance.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.op_Explicit(System.String)~Microsoft.SemanticKernel.Agents.Runtime.AgentId">
+            <summary>
+            Explicitly converts a string to an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+            <param name="id">The string representation of an agent ID.</param>
+            <returns>An instance of <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.op_Equality(Microsoft.SemanticKernel.Agents.Runtime.AgentId,Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <summary>
+            Equality operator for <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentId.op_Inequality(Microsoft.SemanticKernel.Agents.Runtime.AgentId,Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <summary>
+            Inequality operator for <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata">
+            <summary>
+            Represents metadata associated with an agent, including its type, unique key, and description.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Represents metadata associated with an agent, including its type, unique key, and description.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.Type">
+            <summary>
+            An identifier that associates an agent with a specific factory function.
+            Strings may only be composed of alphanumeric letters (a-z, 0-9), or underscores (_).
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.Key">
+            <summary>
+            A unique key identifying the agent instance.
+            Strings may only be composed of alphanumeric letters (a-z, 0-9), or underscores (_).
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.Description">
+            <summary>
+            A brief description of the agent's purpose or functionality.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.Equals(Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.op_Equality(Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata,Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata.op_Inequality(Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata,Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy">
+            <summary>
+            A proxy that allows you to use an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/> in place of its associated <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.IAgent"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy._runtime">
+            <summary>
+            The runtime instance used to interact with agents.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy.#ctor(Microsoft.SemanticKernel.Agents.Runtime.AgentId,Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy"/> class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy.Id">
+            <summary>
+            The target agent for this proxy.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy.Metadata">
+            <summary>
+            Gets the metadata of the agent.
+            </summary>
+            <value>
+            An instance of <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentMetadata"/> containing details about the agent.
+            </value>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy.SendMessageAsync(System.Object,Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sends a message to the agent and processes the response.
+            </summary>
+            <param name="message">The message to send to the agent.</param>
+            <param name="sender">The agent that is sending the message.</param>
+            <param name="messageId">
+            The message ID. If <c>null</c>, a new message ID will be generated.
+            This message ID must be unique and is recommended to be a UUID.
+            </param>
+            <param name="cancellationToken">
+            A token used to cancel an in-progress operation. Defaults to <c>null</c>.
+            </param>
+            <returns>A task representing the asynchronous operation, returning the response from the agent.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy.LoadStateAsync(System.Text.Json.JsonElement)">
+            <summary>
+            Loads the state of the agent from a previously saved state.
+            </summary>
+            <param name="state">A dictionary representing the state of the agent. Must be JSON serializable.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy.SaveStateAsync">
+            <summary>
+            Saves the state of the agent. The result must be JSON serializable.
+            </summary>
+            <returns>A task representing the asynchronous operation, returning a dictionary containing the saved state.</returns>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType">
+            <summary>
+            Represents the type of an agent as a string.
+            This is a strongly-typed wrapper around a string, ensuring type safety when working with agent types.
+            </summary>
+            <remarks>
+            This struct is immutable and provides implicit conversion to and from <see cref="T:System.String"/>.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.TypeRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^[a-zA-Z_][a-zA-Z0-9_]*$</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Match a character in the set [A-Z_a-z].<br/>
+            ○ Match a character in the set [0-9A-Z_a-z] atomically any number of times.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/> struct.
+            </summary>
+            <param name="type">The agent type.</param>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.AgentType.Name">
+            <summary>
+            The string representation of this agent type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.ToString">
+            <summary>
+            Returns the string representation of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/>.
+            </summary>
+            <returns>A string in the format "type/source".</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.op_Explicit(System.Type)~Microsoft.SemanticKernel.Agents.Runtime.AgentType">
+            <summary>
+            Explicitly converts a <see cref="T:System.Type"/> to an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/>.
+            </summary>
+            <param name="type">The .NET <see cref="T:System.Type"/> to convert.</param>
+            <returns>An <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/> instance with the name of the provided type.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.op_Implicit(System.String)~Microsoft.SemanticKernel.Agents.Runtime.AgentType">
+            <summary>
+            Implicitly converts a <see cref="T:System.String"/> to an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/>.
+            </summary>
+            <param name="type">The string representation of the agent type.</param>
+            <returns>An <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/> instance with the given name.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.op_Implicit(Microsoft.SemanticKernel.Agents.Runtime.AgentType)~System.String">
+            <summary>
+            Implicitly converts an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/> to a <see cref="T:System.String"/>.
+            </summary>
+            <param name="type">The <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/> instance.</param>
+            <returns>The string representation of the agent type.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.Equals(Microsoft.SemanticKernel.Agents.Runtime.AgentType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.op_Equality(Microsoft.SemanticKernel.Agents.Runtime.AgentType,Microsoft.SemanticKernel.Agents.Runtime.AgentType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.AgentType.op_Inequality(Microsoft.SemanticKernel.Agents.Runtime.AgentType,Microsoft.SemanticKernel.Agents.Runtime.AgentType)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException">
+            <summary>
+            Exception thrown when a handler cannot process the given message.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException"/> class with a custom error message.
+            </summary>
+            <param name="message">The custom error message.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException"/> class with a custom error message and an inner exception.
+            </summary>
+            <param name="message">The custom error message.</param>
+            <param name="innerException">The inner exception that caused this error.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException">
+            <summary>
+            Exception thrown when a message is dropped.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException"/> class with a custom error message.
+            </summary>
+            <param name="message">The custom error message.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.MessageDroppedException"/> class with a custom error message and an inner exception.
+            </summary>
+            <param name="message">The custom error message.</param>
+            <param name="innerException">The inner exception that caused this error.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException">
+            <summary>
+            Exception thrown when an attempt is made to access an unavailable value, such as a remote resource.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException"/> class with a custom error message.
+            </summary>
+            <param name="message">The custom error message.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.NotAccessibleException"/> class with a custom error message and an inner exception.
+            </summary>
+            <param name="message">The custom error message.</param>
+            <param name="innerException">The inner exception that caused this error.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException">
+            <summary>
+            Exception thrown when a message cannot be delivered.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException"/> class with a custom error message.
+            </summary>
+            <param name="message">The custom error message.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException"/> class with a custom error message and an inner exception.
+            </summary>
+            <param name="message">The custom error message.</param>
+            <param name="innerException">The inner exception that caused this error.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.IAgent">
+            <summary>
+            Represents an agent within the runtime that can process messages, maintain state, and be closed when no longer needed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.IAgent.Id">
+            <summary>
+            Gets the unique identifier of the agent.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.IAgent.Metadata">
+            <summary>
+            Gets metadata associated with the agent.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgent.OnMessageAsync(System.Object,Microsoft.SemanticKernel.Agents.Runtime.MessageContext)">
+            <summary>
+            Handles an incoming message for the agent.
+            This should only be called by the runtime, not by other agents.
+            </summary>
+            <param name="message">The received message. The type should match one of the expected subscription types.</param>
+            <param name="messageContext">The context of the message, providing additional metadata.</param>
+            <returns>
+            A task representing the asynchronous operation, returning a response to the message.
+            The response can be <c>null</c> if no reply is necessary.
+            </returns>
+            <exception cref="T:System.OperationCanceledException">Thrown if the message was cancelled.</exception>
+            <exception cref="T:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException">Thrown if the agent cannot handle the message.</exception>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime">
+            <summary>
+            Defines the runtime environment for agents, managing message sending, subscriptions, agent resolution, and state persistence.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.SendMessageAsync(System.Object,Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.Nullable{Microsoft.SemanticKernel.Agents.Runtime.AgentId},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sends a message to an agent and gets a response.
+            This method should be used to communicate directly with an agent.
+            </summary>
+            <param name="message">The message to send.</param>
+            <param name="recipient">The agent to send the message to.</param>
+            <param name="sender">The agent sending the message. Should be <c>null</c> if sent from an external source.</param>
+            <param name="messageId">A unique identifier for the message. If <c>null</c>, a new ID will be generated.</param>
+            <param name="cancellationToken">A token to cancel the operation if needed.</param>
+            <returns>A task representing the asynchronous operation, returning the response from the agent.</returns>
+            <exception cref="T:Microsoft.SemanticKernel.Agents.Runtime.CantHandleException">Thrown if the recipient cannot handle the message.</exception>
+            <exception cref="T:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException">Thrown if the message cannot be delivered.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.PublishMessageAsync(System.Object,Microsoft.SemanticKernel.Agents.Runtime.TopicId,System.Nullable{Microsoft.SemanticKernel.Agents.Runtime.AgentId},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Publishes a message to all agents subscribed to the given topic.
+            No responses are expected from publishing.
+            </summary>
+            <param name="message">The message to publish.</param>
+            <param name="topic">The topic to publish the message to.</param>
+            <param name="sender">The agent sending the message. Defaults to <c>null</c>.</param>
+            <param name="messageId">A unique message ID. If <c>null</c>, a new one will be generated.</param>
+            <param name="cancellationToken">A token to cancel the operation if needed.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:Microsoft.SemanticKernel.Agents.Runtime.UndeliverableException">Thrown if the message cannot be delivered.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.GetAgentAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.Boolean)">
+            <summary>
+            Retrieves an agent by its unique identifier.
+            </summary>
+            <param name="agentId">The unique identifier of the agent.</param>
+            <param name="lazy">If <c>true</c>, the agent is fetched lazily.</param>
+            <returns>A task representing the asynchronous operation, returning the agent's ID.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.GetAgentAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentType,System.String,System.Boolean)">
+            <summary>
+            Retrieves an agent by its type.
+            </summary>
+            <param name="agentType">The type of the agent.</param>
+            <param name="key">An optional key to specify variations of the agent. Defaults to "default".</param>
+            <param name="lazy">If <c>true</c>, the agent is fetched lazily.</param>
+            <returns>A task representing the asynchronous operation, returning the agent's ID.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.GetAgentAsync(System.String,System.String,System.Boolean)">
+            <summary>
+            Retrieves an agent by its string representation.
+            </summary>
+            <param name="agent">The string representation of the agent.</param>
+            <param name="key">An optional key to specify variations of the agent. Defaults to "default".</param>
+            <param name="lazy">If <c>true</c>, the agent is fetched lazily.</param>
+            <returns>A task representing the asynchronous operation, returning the agent's ID.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.SaveAgentStateAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <summary>
+            Saves the state of an agent.
+            The result must be JSON serializable.
+            </summary>
+            <param name="agentId">The ID of the agent whose state is being saved.</param>
+            <returns>A task representing the asynchronous operation, returning a dictionary of the saved state.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.LoadAgentStateAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.Text.Json.JsonElement)">
+            <summary>
+            Loads the saved state into an agent.
+            </summary>
+            <param name="agentId">The ID of the agent whose state is being restored.</param>
+            <param name="state">The state dictionary to restore.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.GetAgentMetadataAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <summary>
+            Retrieves metadata for an agent.
+            </summary>
+            <param name="agentId">The ID of the agent.</param>
+            <returns>A task representing the asynchronous operation, returning the agent's metadata.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.AddSubscriptionAsync(Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition)">
+            <summary>
+            Adds a new subscription for the runtime to handle when processing published messages.
+            </summary>
+            <param name="subscription">The subscription to add.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.RemoveSubscriptionAsync(System.String)">
+            <summary>
+            Removes a subscription from the runtime.
+            </summary>
+            <param name="subscriptionId">The unique identifier of the subscription to remove.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Thrown if the subscription does not exist.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.RegisterAgentFactoryAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentType,System.Func{Microsoft.SemanticKernel.Agents.Runtime.AgentId,Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime,System.Threading.Tasks.ValueTask{Microsoft.SemanticKernel.Agents.Runtime.IHostableAgent}})">
+            <summary>
+            Registers an agent factory with the runtime, associating it with a specific agent type.
+            The type must be unique.
+            </summary>
+            <param name="type">The agent type to associate with the factory.</param>
+            <param name="factoryFunc">A function that asynchronously creates the agent instance.</param>
+            <returns>A task representing the asynchronous operation, returning the registered <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentType"/>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime.TryGetAgentProxyAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <summary>
+            Attempts to retrieve an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy"/> for the specified agent.
+            </summary>
+            <param name="agentId">The ID of the agent.</param>
+            <returns>A task representing the asynchronous operation, returning an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentProxy"/> if successful.</returns>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.IHostableAgent">
+            <summary>
+            Represents an agent that can be explicitly hosted and closed when the runtime shuts down.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.IHostableAgent.CloseAsync">
+            <summary>
+            Called when the runtime is closing.
+            </summary>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.Internal.KeyValueParserExtensions">
+            <summary>
+            Provides helper methods for parsing key-value string representations.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.Agents.Runtime.Internal.KeyValueParserExtensions.KVPairPattern">
+            <summary>
+            The regular expression pattern used to match key-value pairs in the format "key/value".
+            </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.Agents.Runtime.Internal.KeyValueParserExtensions.KVPairRegex">
+            <summary>
+            The compiled regex used for extracting key-value pairs from a string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.Internal.KeyValueParserExtensions.ToKeyValuePair(System.String,System.String,System.String)">
+            <summary>
+            Parses a string in the format "key/value" into a tuple containing the key and value.
+            </summary>
+            <param name="inputPair">The input string containing a key-value pair.</param>
+            <param name="keyName">The expected name of the key component.</param>
+            <param name="valueName">The expected name of the value component.</param>
+            <returns>A tuple containing the extracted key and value.</returns>
+            <exception cref="T:System.FormatException">
+            Thrown if the input string does not match the expected "key/value" format.
+            </exception>
+            <example>
+            Example usage:
+            <code>
+            string input = "agent1/12345";
+            var result = input.ToKVPair("Type", "Key");
+            Console.WriteLine(result.Item1); // Outputs: agent1
+            Console.WriteLine(result.Item2); // Outputs: 12345
+            </code>
+            </example>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.ISaveState">
+            <summary>
+            Defines a contract for saving and loading the state of an object.
+            The state must be JSON serializable.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISaveState.SaveStateAsync">
+            <summary>
+            Saves the current state of the object.
+            </summary>
+            <returns>
+            A task representing the asynchronous operation, returning a dictionary
+            containing the saved state. The structure of the state is implementation-defined
+            but must be JSON serializable.
+            </returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISaveState.LoadStateAsync(System.Text.Json.JsonElement)">
+            <summary>
+            Loads a previously saved state into the object.
+            </summary>
+            <param name="state">
+            A dictionary representing the saved state. The structure of the state
+            is implementation-defined but must be JSON serializable.
+            </param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition">
+            <summary>
+            Defines a subscription that matches topics and maps them to agents.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.Id">
+            <summary>
+            Gets the unique identifier of the subscription.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.Equals(System.Object)">
+            <summary>
+            Determines whether the specified object is equal to the current subscription.
+            </summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns><c>true</c> if the specified object is equal to this instance; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.Equals(Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition)">
+            <summary>
+            Determines whether the specified subscription is equal to the current subscription.
+            </summary>
+            <param name="other">The subscription to compare.</param>
+            <returns><c>true</c> if the subscriptions are equal; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.GetHashCode">
+            <summary>
+            Returns a hash code for this subscription.
+            </summary>
+            <returns>A hash code for the subscription.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.Matches(Microsoft.SemanticKernel.Agents.Runtime.TopicId)">
+            <summary>
+            Checks if a given <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/> matches the subscription.
+            </summary>
+            <param name="topic">The topic to check.</param>
+            <returns><c>true</c> if the topic matches the subscription; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.MapToAgent(Microsoft.SemanticKernel.Agents.Runtime.TopicId)">
+            <summary>
+            Maps a <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/> to an <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/>.
+            Should only be called if <see cref="M:Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition.Matches(Microsoft.SemanticKernel.Agents.Runtime.TopicId)"/> returns <c>true</c>.
+            </summary>
+            <param name="topic">The topic to map.</param>
+            <returns>The <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.AgentId"/> that should handle the topic.</returns>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.MessageContext">
+            <summary>
+            Represents the context of a message being sent within the agent runtime.
+            This includes metadata such as the sender, topic, RPC status, and cancellation handling.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.#ctor(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Represents the context of a message being sent within the agent runtime.
+            This includes metadata such as the sender, topic, RPC status, and cancellation handling.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.#ctor(System.Threading.CancellationToken)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.MessageContext"/> class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.MessageId">
+            <summary>
+            Gets or sets the unique identifier for this message.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.CancellationToken">
+            <summary>
+            Gets or sets the cancellation token associated with this message.
+            This can be used to cancel the operation if necessary.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.Sender">
+            <summary>
+            Gets or sets the sender of the message.
+            If <c>null</c>, the sender is unspecified.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.Topic">
+            <summary>
+            Gets or sets the topic associated with the message.
+            If <c>null</c>, the message is not tied to a specific topic.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.MessageContext.IsRpc">
+            <summary>
+            Gets or sets a value indicating whether this message is part of an RPC (Remote Procedure Call).
+            </summary>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId">
+             <summary>
+             Represents a topic identifier that defines the scope of a broadcast message.
+             The agent runtime implements a publish-subscribe model through its broadcast API,
+             where messages must be published with a specific topic.
+            
+             See the Python equivalent:
+             <see href="https://github.com/cloudevents/spec/blob/main/cloudevents/spec.md#type">CloudEvents Type Specification</see>.
+             </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.Agents.Runtime.TopicId.DefaultSource">
+            <summary>
+            The default source value used when no source is explicitly provided.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.Agents.Runtime.TopicId.Separator">
+            <summary>
+            The separator character for the string representation of the topic.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.TopicId.Type">
+             <summary>
+             Gets the type of the event that this <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/> represents.
+             This adheres to the CloudEvents specification.
+            
+             Must match the pattern: <c>^[\w\-\.\:\=]+$</c>.
+            
+             Learn more here:
+             <see href="https://github.com/cloudevents/spec/blob/main/cloudevents/spec.md#type">CloudEvents Type</see>.
+             </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.TopicId.Source">
+             <summary>
+             Gets the source that identifies the context in which an event happened.
+             This adheres to the CloudEvents specification.
+            
+             Learn more here:
+             <see href="https://github.com/cloudevents/spec/blob/main/cloudevents/spec.md#source-1">CloudEvents Source</see>.
+             </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/> struct.
+            </summary>
+            <param name="type">The type of the topic.</param>
+            <param name="source">The source of the event. Defaults to <see cref="F:Microsoft.SemanticKernel.Agents.Runtime.TopicId.DefaultSource"/> if not specified.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.#ctor(System.ValueTuple{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/> struct from a tuple.
+            </summary>
+            <param name="kvPair">A tuple containing the topic type and source.</param>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.FromStr(System.String)">
+            <summary>
+            Converts a string in the format "type/source" into a <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.
+            </summary>
+            <param name="maybeTopicId">The topic ID string.</param>
+            <returns>An instance of <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.</returns>
+            <exception cref="T:System.FormatException">Thrown when the string is not in the valid "type/source" format.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.ToString">
+            <summary>
+            Returns the string representation of the <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.
+            </summary>
+            <returns>A string in the format "type/source".</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.Equals(System.Object)">
+            <summary>
+            Determines whether the specified object is equal to the current <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.
+            </summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns><c>true</c> if the specified object is equal to the current <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.Equals(Microsoft.SemanticKernel.Agents.Runtime.TopicId)">
+            <summary>
+            Determines whether the specified object is equal to the current <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.
+            </summary>
+            <param name="other">The object to compare with the current instance.</param>
+            <returns><c>true</c> if the specified object is equal to the current <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.GetHashCode">
+            <summary>
+            Returns a hash code for this <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.
+            </summary>
+            <returns>A hash code for the current instance.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.op_Explicit(System.String)~Microsoft.SemanticKernel.Agents.Runtime.TopicId">
+            <summary>
+            Explicitly converts a string to a <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.
+            </summary>
+            <param name="id">The string representation of a topic ID.</param>
+            <returns>An instance of <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/>.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.IsWildcardMatch(Microsoft.SemanticKernel.Agents.Runtime.TopicId)">
+            <summary>
+            Determines whether the given <see cref="T:Microsoft.SemanticKernel.Agents.Runtime.TopicId"/> matches another topic.
+            </summary>
+            <param name="other">The topic ID to compare against.</param>
+            <returns>
+            <c>true</c> if the topic types are equal; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.op_Equality(Microsoft.SemanticKernel.Agents.Runtime.TopicId,Microsoft.SemanticKernel.Agents.Runtime.TopicId)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.TopicId.op_Inequality(Microsoft.SemanticKernel.Agents.Runtime.TopicId,Microsoft.SemanticKernel.Agents.Runtime.TopicId)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.AppContextSwitchHelper">
+            <summary>
+            Helper class to get app context switch value
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.AppContextSwitchHelper.GetConfigValue(System.String,System.String)">
+            <summary>
+            Returns the value of the specified app switch or environment variable if it is set.
+            If the switch or environment variable is not set, return false.
+            The app switch value takes precedence over the environment variable.
+            </summary>
+            <param name="appContextSwitchName">The name of the app switch.</param>
+            <param name="envVarName">The name of the environment variable.</param>
+            <returns>The value of the app switch or environment variable if it is set; otherwise, false.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.IListExtensions.AddRange``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds a range of elements from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> source to the target <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>
+            <typeparam name="T">The type of elements in the list.</typeparam>
+            <param name="target">The target <see cref="T:System.Collections.Generic.IList`1"/> to add elements to.</param>
+            <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing elements to add to the target <see cref="T:System.Collections.Generic.IList`1"/>.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.InternalTypeConverter">
+            <summary>
+            Provides internal utility methods for converting types to strings with consideration for CultureInfo.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.InternalTypeConverter.ConvertToString(System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts the given object value to a string representation using the appropriate CultureInfo.
+            </summary>
+            <param name="value">The object to convert.</param>
+            <param name="culture">The CultureInfo to consider during conversion.</param>
+            <returns>A string representation of the object value, considering the specified CultureInfo.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.InternalTypeConverter.GetTypeToStringConverterDelegate(System.Type)">
+            <summary>
+            Retrieves a type-to-string converter delegate for the specified source type.
+            </summary>
+            <param name="sourceType">The source Type for which to retrieve the type-to-string converter delegate.</param>
+            <returns>A Func delegate for converting the source type to a string, considering CultureInfo, or null if no suitable converter is found.</returns>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.InternalTypeConverter.s_converters">
+            <summary>Converter functions for converting types to strings.</summary>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.NonNullCollection`1">
+            <summary>
+            Provides a collection of non-null items.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.NonNullCollection`1._items">
+            <summary>
+            The underlying list of items.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.NonNullCollection`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.NonNullCollection`1"/> class.
+            </summary>
+            <param name="items">The initial collection of items to populate this collection.</param>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.NonNullCollection`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the item at the specified index in the collection.
+            </summary>
+            <param name="index">The index of the item to get or set.</param>
+            <returns>The item at the specified index.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="index"/> was not valid for this collection.</exception>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.NonNullCollection`1.Count">
+            <summary>
+            Gets the number of items in the collection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Add(`0)">
+            <summary>
+            Adds an item to the collection.
+            </summary>
+            <param name="item">The item to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Clear">
+            <summary>
+            Removes all items from the collection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Contains(`0)">
+            <summary>
+            Determines whether an item is in the collection.
+            </summary>
+            <param name="item">The item to locate.</param>
+            <returns>True if the item is found in the collection; otherwise, false.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies all of the items in the collection to an array, starting at the specified destination array index.
+            </summary>
+            <param name="array">The destination array into which the items should be copied.</param>
+            <param name="arrayIndex">The zero-based index into <paramref name="array"/> at which copying should begin.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">The number of items in the collection is greater than the available space from <paramref name="arrayIndex"/> to the end of <paramref name="array"/>.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.IndexOf(`0)">
+            <summary>
+            Searches for the specified item and returns the index of the first occurrence.
+            </summary>
+            <param name="item">The item to locate.</param>
+            <returns>The index of the first found occurrence of the specified item; -1 if the item could not be found.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts an item into the collection at the specified index.
+            </summary>
+            <param name="index">The index at which the item should be inserted.</param>
+            <param name="item">The item to insert.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Remove(`0)">
+            <summary>
+            Removes the first occurrence of the specified item from the collection.
+            </summary>
+            <param name="item">The item to remove from the collection.</param>
+            <returns>True if the item was successfully removed; false if it wasn't located in the collection.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the item at the specified index from the collection.
+            </summary>
+            <param name="index">The index of the item to remove.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.TypeConverterFactory">
+            <summary>
+            Factory for creating TypeConverter instances based on a provided type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.TypeConverterFactory.GetTypeConverter(System.Type)">
+            <summary>
+            Returns a TypeConverter instance for the specified type.
+            </summary>
+            <param name="type">The Type of the object to convert.</param>
+            <returns>A TypeConverter instance if a suitable converter is found, otherwise null.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Verify.FilenameRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^[^.]+\\.[^.]+$</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Match a character other than '.' atomically at least once.<br/>
+            ○ Match '.'.<br/>
+            ○ Match a character other than '.' greedily at least once.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Verify.NotNull(System.Object,System.String)">
+            <summary>
+            Equivalent of ArgumentNullException.ThrowIfNull
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Verify.ValidHostnameSegment(System.String,System.String)">
+            <summary>
+            Validates that a hostname segment string is safe for use as a URL segment, preventing URL injection.
+            </summary>
+            <param name="hostNameSegment">The hostname segment string to validate (e.g., 'us-east1', 'europe-west4')</param>
+            <param name="paramName">Optional parameter name for the exception</param>
+            <exception cref="T:System.ArgumentException">Thrown when the location contains invalid characters or patterns</exception>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider">
+            <summary>Provides an implementation of <see cref="T:Microsoft.Extensions.DependencyInjection.IKeyedServiceProvider"/> that contains no services.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.Instance">
+            <summary>Gets a singleton instance of <see cref="T:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.GetService(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.GetKeyedService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.GetRequiredKeyedService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.EnvExtensions.GetBoolEnvVar(System.String)">
+            <summary>
+            Source: https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/src/DiagnosticsOptions.cs
+            Values: https://learn.microsoft.com/en-us/dotnet/api/azure.core.diagnosticsoptions.istelemetryenabled?view=azure-dotnet
+            </summary>
+        </member>
+        <member name="T:System.ExceptionExtensions">
+            <summary>
+            Exception extension methods.
+            </summary>
+        </member>
+        <member name="M:System.ExceptionExtensions.IsCriticalException(System.Exception)">
+            <summary>
+            Check if an exception is of a type that should not be caught by the kernel.
+            </summary>
+            <param name="ex">Exception.</param>
+            <returns>True if <paramref name="ex"/> is a critical exception and should not be caught.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.TypeRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the TypeRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.TypeRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.TypeRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.TypeRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.TypeRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.TypeRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.TypeRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.TypeRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.TypeRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.FilenameRegex_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the FilenameRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.FilenameRegex_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.FilenameRegex_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.FilenameRegex_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_asciiWordChars">
+            <summary>Supports searching for characters in or not in "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DotNetEnv</id>
+    <version>3.1.1</version>
+    <title>DotNetEnv</title>
+    <authors>DotNetEnv</authors>
+    <license type="file">LICENSE</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/tonerdo/dotnet-env</projectUrl>
+    <description>A .NET library to load environment variables from .env files</description>
+    <tags>dotnet env dotfiles</tags>
+    <repository type="git" url="https://github.com/tonerdo/dotnet-env" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="Microsoft.Extensions.Configuration" version="1.1.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="1.1.2" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="Sprache" version="2.3.1" exclude="Build,Analyzers" />
+        <dependency id="System.Net.Http" version="4.3.4" exclude="Build,Analyzers" />
+        <dependency id="System.Text.RegularExpressions" version="4.3.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

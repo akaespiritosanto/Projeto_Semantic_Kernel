@@ -10,7 +10,7 @@
         "projectUniqueName": "C:\\Users\\afons\\Desktop\\17-03-2026\\Projeto_Semantic_Kernel\\Projeto_Semantic_Kernel.csproj",
         "projectName": "Projeto_Semantic_Kernel",
         "projectPath": "C:\\Users\\afons\\Desktop\\17-03-2026\\Projeto_Semantic_Kernel\\Projeto_Semantic_Kernel.csproj",
-        "packagesPath": "C:\\Users\\afons\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\afons\\Desktop\\17-03-2026\\Projeto_Semantic_Kernel\\.dotnet_home\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\afons\\Desktop\\17-03-2026\\Projeto_Semantic_Kernel\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -44,6 +44,10 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
               "version": "[10.0.5, )"
@@ -60,9 +64,29 @@
               "target": "Package",
               "version": "[1.73.0, )"
             },
+            "Microsoft.SemanticKernel.Agents.Core": {
+              "target": "Package",
+              "version": "[1.73.0, )"
+            },
+            "Microsoft.SemanticKernel.Agents.Magentic": {
+              "target": "Package",
+              "version": "[1.73.0-preview, )"
+            },
+            "Microsoft.SemanticKernel.Agents.Orchestration": {
+              "target": "Package",
+              "version": "[1.73.0-preview, )"
+            },
+            "Microsoft.SemanticKernel.Agents.Runtime.InProcess": {
+              "target": "Package",
+              "version": "[1.73.0-preview, )"
+            },
             "Microsoft.SemanticKernel.Connectors.Ollama": {
               "target": "Package",
               "version": "[1.73.0-alpha, )"
+            },
+            "System.Net.Http": {
+              "target": "Package",
+              "version": "[4.3.4, )"
             }
           },
           "imports": [

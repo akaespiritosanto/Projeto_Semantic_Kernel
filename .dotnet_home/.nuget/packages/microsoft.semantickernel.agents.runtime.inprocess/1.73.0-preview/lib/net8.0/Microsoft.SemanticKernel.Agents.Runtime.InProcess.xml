@@ -1,0 +1,349 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.SemanticKernel.Agents.Runtime.InProcess</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime">
+            <summary>
+            Provides an in-process/in-memory implementation of the agent runtime.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.DeliverToSelf">
+            <summary>
+            Gets or sets a value indicating whether agents should receive messages they send themselves.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts the runtime service.
+            </summary>
+            <param name="cancellationToken">Token to monitor for shutdown requests.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the runtime is already started.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops the runtime service.
+            </summary>
+            <param name="cancellationToken">Token to propagate when stopping the runtime.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the runtime is in the process of stopping.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.RunUntilIdleAsync">
+            <summary>
+            This will run until the message queue is empty and then stop the runtime.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.PublishMessageAsync(System.Object,Microsoft.SemanticKernel.Agents.Runtime.TopicId,System.Nullable{Microsoft.SemanticKernel.Agents.Runtime.AgentId},System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.SendMessageAsync(System.Object,Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.Nullable{Microsoft.SemanticKernel.Agents.Runtime.AgentId},System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.GetAgentAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.GetAgentAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentType,System.String,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.GetAgentAsync(System.String,System.String,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.GetAgentMetadataAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.TryGetUnderlyingAgentInstanceAsync``1(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.LoadAgentStateAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId,System.Text.Json.JsonElement)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.SaveAgentStateAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.AddSubscriptionAsync(Microsoft.SemanticKernel.Agents.Runtime.ISubscriptionDefinition)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.RemoveSubscriptionAsync(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.LoadStateAsync(System.Text.Json.JsonElement)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.SaveStateAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.RegisterAgentFactoryAsync``1(Microsoft.SemanticKernel.Agents.Runtime.AgentType,System.Func{Microsoft.SemanticKernel.Agents.Runtime.AgentId,Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime,System.Threading.Tasks.ValueTask{``0}})">
+            <summary>
+            Registers an agent factory with the runtime, associating it with a specific agent type.
+            </summary>
+            <typeparam name="TAgent">The type of agent created by the factory.</typeparam>
+            <param name="type">The agent type to associate with the factory.</param>
+            <param name="factoryFunc">A function that asynchronously creates the agent instance.</param>
+            <returns>A task representing the asynchronous operation, returning the registered agent type.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.RegisterAgentFactoryAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentType,System.Func{Microsoft.SemanticKernel.Agents.Runtime.AgentId,Microsoft.SemanticKernel.Agents.Runtime.IAgentRuntime,System.Threading.Tasks.ValueTask{Microsoft.SemanticKernel.Agents.Runtime.IHostableAgent}})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Agents.Runtime.InProcess.InProcessRuntime.TryGetAgentProxyAsync(Microsoft.SemanticKernel.Agents.Runtime.AgentId)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.AppContextSwitchHelper">
+            <summary>
+            Helper class to get app context switch value
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.AppContextSwitchHelper.GetConfigValue(System.String,System.String)">
+            <summary>
+            Returns the value of the specified app switch or environment variable if it is set.
+            If the switch or environment variable is not set, return false.
+            The app switch value takes precedence over the environment variable.
+            </summary>
+            <param name="appContextSwitchName">The name of the app switch.</param>
+            <param name="envVarName">The name of the environment variable.</param>
+            <returns>The value of the app switch or environment variable if it is set; otherwise, false.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.IListExtensions.AddRange``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds a range of elements from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> source to the target <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>
+            <typeparam name="T">The type of elements in the list.</typeparam>
+            <param name="target">The target <see cref="T:System.Collections.Generic.IList`1"/> to add elements to.</param>
+            <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing elements to add to the target <see cref="T:System.Collections.Generic.IList`1"/>.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.InternalTypeConverter">
+            <summary>
+            Provides internal utility methods for converting types to strings with consideration for CultureInfo.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.InternalTypeConverter.ConvertToString(System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts the given object value to a string representation using the appropriate CultureInfo.
+            </summary>
+            <param name="value">The object to convert.</param>
+            <param name="culture">The CultureInfo to consider during conversion.</param>
+            <returns>A string representation of the object value, considering the specified CultureInfo.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.InternalTypeConverter.GetTypeToStringConverterDelegate(System.Type)">
+            <summary>
+            Retrieves a type-to-string converter delegate for the specified source type.
+            </summary>
+            <param name="sourceType">The source Type for which to retrieve the type-to-string converter delegate.</param>
+            <returns>A Func delegate for converting the source type to a string, considering CultureInfo, or null if no suitable converter is found.</returns>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.InternalTypeConverter.s_converters">
+            <summary>Converter functions for converting types to strings.</summary>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.NonNullCollection`1">
+            <summary>
+            Provides a collection of non-null items.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SemanticKernel.NonNullCollection`1._items">
+            <summary>
+            The underlying list of items.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.NonNullCollection`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.SemanticKernel.NonNullCollection`1"/> class.
+            </summary>
+            <param name="items">The initial collection of items to populate this collection.</param>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.NonNullCollection`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the item at the specified index in the collection.
+            </summary>
+            <param name="index">The index of the item to get or set.</param>
+            <returns>The item at the specified index.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="index"/> was not valid for this collection.</exception>
+        </member>
+        <member name="P:Microsoft.SemanticKernel.NonNullCollection`1.Count">
+            <summary>
+            Gets the number of items in the collection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Add(`0)">
+            <summary>
+            Adds an item to the collection.
+            </summary>
+            <param name="item">The item to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Clear">
+            <summary>
+            Removes all items from the collection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Contains(`0)">
+            <summary>
+            Determines whether an item is in the collection.
+            </summary>
+            <param name="item">The item to locate.</param>
+            <returns>True if the item is found in the collection; otherwise, false.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies all of the items in the collection to an array, starting at the specified destination array index.
+            </summary>
+            <param name="array">The destination array into which the items should be copied.</param>
+            <param name="arrayIndex">The zero-based index into <paramref name="array"/> at which copying should begin.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">The number of items in the collection is greater than the available space from <paramref name="arrayIndex"/> to the end of <paramref name="array"/>.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.IndexOf(`0)">
+            <summary>
+            Searches for the specified item and returns the index of the first occurrence.
+            </summary>
+            <param name="item">The item to locate.</param>
+            <returns>The index of the first found occurrence of the specified item; -1 if the item could not be found.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts an item into the collection at the specified index.
+            </summary>
+            <param name="index">The index at which the item should be inserted.</param>
+            <param name="item">The item to insert.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.Remove(`0)">
+            <summary>
+            Removes the first occurrence of the specified item from the collection.
+            </summary>
+            <param name="item">The item to remove from the collection.</param>
+            <returns>True if the item was successfully removed; false if it wasn't located in the collection.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="item"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.NonNullCollection`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the item at the specified index from the collection.
+            </summary>
+            <param name="index">The index of the item to remove.</param>
+        </member>
+        <member name="T:Microsoft.SemanticKernel.TypeConverterFactory">
+            <summary>
+            Factory for creating TypeConverter instances based on a provided type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.TypeConverterFactory.GetTypeConverter(System.Type)">
+            <summary>
+            Returns a TypeConverter instance for the specified type.
+            </summary>
+            <param name="type">The Type of the object to convert.</param>
+            <returns>A TypeConverter instance if a suitable converter is found, otherwise null.</returns>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Verify.FilenameRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^[^.]+\\.[^.]+$</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Match a character other than '.' atomically at least once.<br/>
+            ○ Match '.'.<br/>
+            ○ Match a character other than '.' greedily at least once.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Verify.NotNull(System.Object,System.String)">
+            <summary>
+            Equivalent of ArgumentNullException.ThrowIfNull
+            </summary>
+        </member>
+        <member name="M:Microsoft.SemanticKernel.Verify.ValidHostnameSegment(System.String,System.String)">
+            <summary>
+            Validates that a hostname segment string is safe for use as a URL segment, preventing URL injection.
+            </summary>
+            <param name="hostNameSegment">The hostname segment string to validate (e.g., 'us-east1', 'europe-west4')</param>
+            <param name="paramName">Optional parameter name for the exception</param>
+            <exception cref="T:System.ArgumentException">Thrown when the location contains invalid characters or patterns</exception>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider">
+            <summary>Provides an implementation of <see cref="T:Microsoft.Extensions.DependencyInjection.IKeyedServiceProvider"/> that contains no services.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.Instance">
+            <summary>Gets a singleton instance of <see cref="T:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.GetService(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.GetKeyedService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.EmptyKeyedServiceProvider.GetRequiredKeyedService(System.Type,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.EnvExtensions.GetBoolEnvVar(System.String)">
+            <summary>
+            Source: https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/src/DiagnosticsOptions.cs
+            Values: https://learn.microsoft.com/en-us/dotnet/api/azure.core.diagnosticsoptions.istelemetryenabled?view=azure-dotnet
+            </summary>
+        </member>
+        <member name="T:System.ExceptionExtensions">
+            <summary>
+            Exception extension methods.
+            </summary>
+        </member>
+        <member name="M:System.ExceptionExtensions.IsCriticalException(System.Exception)">
+            <summary>
+            Check if an exception is of a type that should not be caught by the kernel.
+            </summary>
+            <param name="ex">Exception.</param>
+            <returns>True if <paramref name="ex"/> is a critical exception and should not be caught.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.FilenameRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the FilenameRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.FilenameRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.FilenameRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.FilenameRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FilenameRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+    </members>
+</doc>

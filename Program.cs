@@ -1,17 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
-using Microsoft.SemanticKernel.Agents.Orchestration;
-using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.Ollama;
 using DotNetEnv;
 using semantic_kernel.Dtos;
-using Microsoft.SemanticKernel.Agents.Orchestration.Sequential;
-using Microsoft.SemanticKernel.Agents.Runtime.Core;
-using Microsoft.SemanticKernel.Services;
 using semantic_kernel.Services;
+using Microsoft.EntityFrameworkCore;
+using Location = semantic_kernel.Models.Location;
 using System.Globalization;
 using System.Text.Json;
 
@@ -28,8 +22,19 @@ var kernel = builder.Build();
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddHttpClient();
 serviceCollection.AddSingleton<ApiService>();
+var locationsDbPath = Path.Combine(AppContext.BaseDirectory, "locations.db");
+serviceCollection.AddDbContext<LocationsDbContext>(options =>
+    options.UseSqlite($"Data Source={locationsDbPath}"));
 using var serviceProvider = serviceCollection.BuildServiceProvider();
 var apiService = serviceProvider.GetRequiredService<ApiService>();
+
+using (var scope = serviceProvider.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LocationsDbContext>();
+    db.Database.EnsureCreated();
+    await EnsureLocationsSchemaAsync(db);
+    await EnsureLocationsSeededAsync(db);
+}
 
 var ideasAgent = new ChatCompletionAgent
 {
@@ -46,9 +51,9 @@ var weatherAgent = new ChatCompletionAgent{
     Name = "Weather",
     Instructions =
         "You are a weather specialist agent." +
-        "You will receive JSON with place info and temperatures (Celsius) already fetched from a weather API.\n" +
-        "Your job is to summarize the weather in Portuguese, include temp/temp_min/temp_max, and classify it as 'muito frio', 'frio', 'agradável', 'quente' or 'muito quente'.\n" +
-        "Use ONLY the numbers provided in the JSON.",
+        "You will receive JSON with place info and the current temperature (Celsius) already fetched from a weather API.\n" +
+        "Your job is to output ONLY the current temperature in Portuguese (e.g., \"18°C\").\n" +
+        "Use ONLY the number provided in the JSON.",
     Kernel = kernel
 };
 
@@ -57,13 +62,13 @@ var interpreterAgent = new ChatCompletionAgent
     Name = "Interpreter",
     Instructions =
         "You are an text interpreter specialist." +
-        "Your job is to recommend the place to visit based on the user request and the weather summary.\n" +
-        "Output in Portuguese: place name, location, coordinates, current temperature, and a short recommendation.",
+        "Your job is to output a formatted table (plain text) with all locations and their current temperature.\n" +
+        "Do not call external APIs. Use ONLY the data provided.\n" +
+        "Columns: Location | Name | Latitude | Longitude | Temperature (C) | LastUpdated (ISO 8601).",
     Kernel = kernel
 };
 
 string ideasOutput = "";
-string weatherOutput = "";
 string interpreterOutput = "";
 
 static string ExtractFirstJsonObject(string text)
@@ -108,6 +113,66 @@ static bool TryParsePlace(string text, out PlaceRecommendation place)
     return false;
 }
 
+static async Task EnsureLocationsSchemaAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+{
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            "ALTER TABLE Locations ADD COLUMN Temperature REAL NOT NULL DEFAULT 0",
+            cancellationToken);
+    }
+    catch (Exception ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase)
+                               || ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+    {
+    }
+}
+
+static async Task EnsureLocationsSeededAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+{
+    if (await db.Locations.AnyAsync(cancellationToken))
+    {
+        return;
+    }
+
+    db.Locations.AddRange(
+        new Location { Name = "Funchal", Latitude = 32.6669, Longitude = -16.9241, Type = "city", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Pico do Areeiro", Latitude = 32.7356, Longitude = -16.9289, Type = "nature", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Porto Moniz", Latitude = 32.8668, Longitude = -17.1662, Type = "nature", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Santana", Latitude = 32.8007, Longitude = -16.8801, Type = "rural", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Ponta de São Lourenço", Latitude = 32.7403, Longitude = -16.7014, Type = "nature", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue }
+    );
+
+    await db.SaveChangesAsync(cancellationToken);
+}
+
+static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService apiService, CancellationToken cancellationToken = default)
+{
+    var locations = await db.Locations.ToListAsync(cancellationToken);
+    if (locations.Count == 0)
+    {
+        return;
+    }
+
+    foreach (var location in locations)
+    {
+        try
+        {
+            var weather = await apiService.SearchWeather(location.Latitude, location.Longitude, cancellationToken);
+            var temp = weather?.main?.temp;
+            if (temp is not null)
+            {
+                location.Temperature = temp.Value;
+                location.LastUpdated = DateTime.UtcNow;
+            }
+        }
+        catch
+        {
+        }
+    }
+
+    await db.SaveChangesAsync(cancellationToken);
+}
+
 do
 {
     Console.Write("User > ");
@@ -118,9 +183,14 @@ do
     }
 
     ideasOutput = "";
-    weatherOutput = "";
     interpreterOutput = "";
-    
+
+    using var scope = serviceProvider.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<LocationsDbContext>();
+
+    await EnsureLocationsSeededAsync(db);
+    await RefreshAllTemperaturesAsync(db, apiService);
+
     await foreach (var response in ideasAgent.InvokeAsync(userInput))
     {
         ideasOutput += response.Message.Content;
@@ -143,14 +213,47 @@ do
         continue;
     }
 
+    var temperature = weatherApiResponse?.main?.temp;
+    if (temperature is null)
+    {
+        Console.WriteLine("Assistant > Não consegui obter a temperatura atual. Tenta novamente.");
+        continue;
+    }
+
+    var now = DateTime.UtcNow;
+    var placeName = (place.name ?? "Unknown").Trim();
+
+    var existingLocation = await db.Locations.FirstOrDefaultAsync(l => l.Name.ToLower() == placeName.ToLower());
+    if (existingLocation is null)
+    {
+        db.Locations.Add(new Location
+        {
+            Name = placeName,
+            Latitude = place.lat,
+            Longitude = place.lon,
+            Temperature = temperature.Value,
+            LastUpdated = now,
+            Type = "unknown",
+            Weather = "N/A"
+        });
+    }
+    else
+    {
+        existingLocation.Name = placeName;
+        existingLocation.Latitude = place.lat;
+        existingLocation.Longitude = place.lon;
+        existingLocation.Temperature = temperature.Value;
+        existingLocation.LastUpdated = now;
+    }
+
+    await db.SaveChangesAsync();
+
     var payload = new
     {
         place,
         weather = new
         {
-            temp = weatherApiResponse?.main?.temp,
-            temp_min = weatherApiResponse?.main?.temp_min,
-            temp_max = weatherApiResponse?.main?.temp_max,
+            temp = temperature.Value,
             units = "C"
         }
     };
@@ -159,13 +262,25 @@ do
 
     await foreach (var response in weatherAgent.InvokeAsync(weatherInput))
     {
-        weatherOutput += response.Message.Content;
+        _ = response;
     }
 
+    var locationsSnapshot = await db.Locations.AsNoTracking()
+        .OrderBy(l => l.Name)
+        .Select(l => new
+        {
+            Location = "Madeira",
+            l.Name,
+            l.Latitude,
+            l.Longitude,
+            Temperature = l.Temperature.ToString("0.#", CultureInfo.InvariantCulture) + " ºC",
+            l.LastUpdated
+        })
+        .ToListAsync();
+
     string interpreterInput =
-        "Pedido do utilizador: " + userInput + "\n"
-        + "Sugestão de lugar: " + place.name + " (" + place.location + $") [{place.lat.ToString(CultureInfo.InvariantCulture)},{place.lon.ToString(CultureInfo.InvariantCulture)}]\n"
-        + "Resumo do tempo: " + weatherOutput;
+        "Dados atuais da base de dados (fonte única de verdade):\n"
+        + JsonSerializer.Serialize(locationsSnapshot, new JsonSerializerOptions { WriteIndented = true });
 
     await foreach (var response in interpreterAgent.InvokeAsync(interpreterInput))
     {

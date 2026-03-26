@@ -2,6 +2,7 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using DotNetEnv;
+using semantic_kernel;
 using semantic_kernel.Dtos;
 using semantic_kernel.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +17,16 @@ var builder = Kernel.CreateBuilder()
     );
 
 Env.Load();
+DebugUtil.Log("Loaded environment (.env).");
 
 var kernel = builder.Build();
+DebugUtil.Log("Semantic Kernel built.");
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddHttpClient();
 serviceCollection.AddSingleton<ApiService>();
 var locationsDbPath = Path.Combine(AppContext.BaseDirectory, "locations.db");
+DebugUtil.Log($"SQLite DB path: {locationsDbPath}");
 serviceCollection.AddDbContext<LocationsDbContext>(options =>
     options.UseSqlite($"Data Source={locationsDbPath}"));
 using var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -34,6 +38,8 @@ using (var scope = serviceProvider.CreateScope())
     db.Database.EnsureCreated();
     await EnsureLocationsSchemaAsync(db);
     await EnsureLocationsSeededAsync(db);
+    await RefreshAllTemperaturesAsync(db, apiService);
+    DebugUtil.Log($"DB ready. Locations count: {await db.Locations.CountAsync()}");
 }
 
 var ideasAgent = new ChatCompletionAgent
@@ -120,10 +126,12 @@ static async Task EnsureLocationsSchemaAsync(LocationsDbContext db, Cancellation
         await db.Database.ExecuteSqlRawAsync(
             "ALTER TABLE Locations ADD COLUMN Temperature REAL NOT NULL DEFAULT 0",
             cancellationToken);
+        DebugUtil.Log("DB schema updated: added Locations.Temperature column.");
     }
     catch (Exception ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase)
                                || ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
     {
+        DebugUtil.Log("DB schema already includes Locations.Temperature column.");
     }
 }
 
@@ -131,6 +139,7 @@ static async Task EnsureLocationsSeededAsync(LocationsDbContext db, Cancellation
 {
     if (await db.Locations.AnyAsync(cancellationToken))
     {
+        DebugUtil.Log("DB seed skipped (Locations already has rows).");
         return;
     }
 
@@ -143,6 +152,7 @@ static async Task EnsureLocationsSeededAsync(LocationsDbContext db, Cancellation
     );
 
     await db.SaveChangesAsync(cancellationToken);
+    DebugUtil.Log("DB seeded with default Madeira locations.");
 }
 
 static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService apiService, CancellationToken cancellationToken = default)
@@ -152,6 +162,10 @@ static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService 
     {
         return;
     }
+
+    int updated = 0;
+    int missing = 0;
+    int failed = 0;
 
     foreach (var location in locations)
     {
@@ -163,14 +177,22 @@ static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService 
             {
                 location.Temperature = temp.Value;
                 location.LastUpdated = DateTime.UtcNow;
+                updated++;
+            }
+            else
+            {
+                missing++;
             }
         }
-        catch
+        catch (Exception ex)
         {
+            failed++;
+            DebugUtil.Log($"Weather refresh failed for '{location.Name ?? "(null)"}': {ex.Message}");
         }
     }
 
     await db.SaveChangesAsync(cancellationToken);
+    DebugUtil.Log($"Weather refresh complete. updated={updated}, missing={missing}, failed={failed}");
 }
 
 do
@@ -182,6 +204,8 @@ do
         break;
     }
 
+    DebugUtil.Log($"User input: {DebugUtil.Truncate(userInput.Trim(), 200)}");
+
     ideasOutput = "";
     interpreterOutput = "";
 
@@ -191,16 +215,22 @@ do
     await EnsureLocationsSeededAsync(db);
     await RefreshAllTemperaturesAsync(db, apiService);
 
+    DebugUtil.Log("Invoking Ideas agent...");
     await foreach (var response in ideasAgent.InvokeAsync(userInput))
     {
         ideasOutput += response.Message.Content;
     }
 
+    DebugUtil.Log($"Ideas raw output: {DebugUtil.Truncate(ideasOutput, 400)}");
+
     if (!TryParsePlace(ideasOutput, out var place))
     {
         Console.WriteLine("Assistant > Não consegui interpretar as coordenadas. Tenta novamente.");
+        DebugUtil.Log("TryParsePlace failed.");
         continue;
     }
+
+    DebugUtil.Log($"Parsed place: name='{place.name}', location='{place.location}', lat={place.lat}, lon={place.lon}");
 
     WeatherApiResponse? weatherApiResponse;
     try
@@ -210,6 +240,7 @@ do
     catch (Exception ex)
     {
         Console.WriteLine("Assistant > Erro ao chamar a API do tempo: " + ex.Message);
+        DebugUtil.Log($"Weather API error for parsed place: {ex}");
         continue;
     }
 
@@ -217,15 +248,20 @@ do
     if (temperature is null)
     {
         Console.WriteLine("Assistant > Não consegui obter a temperatura atual. Tenta novamente.");
+        DebugUtil.Log("Weather API response missing temperature.");
         continue;
     }
 
+    DebugUtil.Log($"Weather API temperature for parsed place: {temperature.Value.ToString(CultureInfo.InvariantCulture)} C");
+
     var now = DateTime.UtcNow;
     var placeName = (place.name ?? "Unknown").Trim();
+    var placeNameLower = placeName.ToLower();
 
-    var existingLocation = await db.Locations.FirstOrDefaultAsync(l => l.Name.ToLower() == placeName.ToLower());
+    var existingLocation = await db.Locations.FirstOrDefaultAsync(l => l.Name != null && l.Name.ToLower() == placeNameLower);
     if (existingLocation is null)
     {
+        DebugUtil.Log($"DB upsert: inserting new location '{placeName}'.");
         db.Locations.Add(new Location
         {
             Name = placeName,
@@ -239,6 +275,7 @@ do
     }
     else
     {
+        DebugUtil.Log($"DB upsert: updating location '{existingLocation.Name}' -> '{placeName}'.");
         existingLocation.Name = placeName;
         existingLocation.Latitude = place.lat;
         existingLocation.Longitude = place.lon;
@@ -260,6 +297,7 @@ do
 
     string weatherInput = JsonSerializer.Serialize(payload);
 
+    DebugUtil.Log("Invoking Weather agent (response ignored; DB is source of truth)...");
     await foreach (var response in weatherAgent.InvokeAsync(weatherInput))
     {
         _ = response;
@@ -278,15 +316,19 @@ do
         })
         .ToListAsync();
 
+    DebugUtil.Log($"Locations snapshot rows: {locationsSnapshot.Count}");
+
     string interpreterInput =
         "Dados atuais da base de dados (fonte única de verdade):\n"
         + JsonSerializer.Serialize(locationsSnapshot, new JsonSerializerOptions { WriteIndented = true });
 
+    DebugUtil.Log("Invoking Interpreter agent...");
     await foreach (var response in interpreterAgent.InvokeAsync(interpreterInput))
     {
         interpreterOutput += response.Message.Content;
     }
 
+    DebugUtil.Log($"Interpreter output: {DebugUtil.Truncate(interpreterOutput, 400)}");
     Console.WriteLine("Assistant > " + interpreterOutput);
 } while (true);
 

@@ -40,4 +40,3 @@ public static class DebugUtil
         return text.Substring(0, maxChars) + "...";
     }
 }
-

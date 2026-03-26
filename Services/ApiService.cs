@@ -6,11 +6,11 @@ using semantic_kernel;
 using semantic_kernel.Dtos;
 public class ApiService
 {
-    private readonly IHttpClientFactory _factory;
+    private readonly HttpClient _httpClient;
 
-    public ApiService(IHttpClientFactory factory)
+    public ApiService(HttpClient httpClient)
     {
-        _factory = factory;
+        _httpClient = httpClient;
     }
 
     public async Task<WeatherApiResponse?> SearchWeather(double lat, double lon, CancellationToken cancellationToken = default)
@@ -21,8 +21,6 @@ public class ApiService
             DebugUtil.Log("Missing environment variable API_KEY (OpenWeather).");
             throw new InvalidOperationException("Missing environment variable API_KEY (OpenWeather).");
         }
-
-        var client = _factory.CreateClient();
 
         string urlForLog =
             "https://api.openweathermap.org/data/2.5/weather"
@@ -41,7 +39,7 @@ public class ApiService
             + "&units=metric"
             + "&lang=pt";
 
-        return await client.GetFromJsonAsync<WeatherApiResponse>(url, cancellationToken: cancellationToken);
+        return await _httpClient.GetFromJsonAsync<WeatherApiResponse>(url, cancellationToken: cancellationToken);
     }
 
 }

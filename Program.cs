@@ -54,12 +54,13 @@ LocationsDbContext CreateDb() => new(dbOptions);
 
 // ====================================================================================================================
 // Inicialização da base de dados (criar, ajustar schema e fazer seed)
+// - Remove colunas legadas (ex: Locations.Type) quando necessário
 // ====================================================================================================================
 await using (var db = CreateDb())
 {
     db.Database.EnsureCreated();
-    await EnsureLocationsSchemaAsync(db);
-    await EnsureLocationsSeededAsync(db);
+    await LocationsDbInitializer.EnsureLocationsSchemaAsync(db);
+    await LocationsDbInitializer.EnsureLocationsSeededAsync(db);
     await RefreshAllTemperaturesAsync(db, apiService);
     DebugUtil.Log($"DB ready. Locations count: {await db.Locations.CountAsync()}");
 }
@@ -121,20 +122,109 @@ var interpreterAgent = new ChatCompletionAgent
 // ====================================================================================================================
 // Funções auxiliares (base de dados)
 // ====================================================================================================================
+#if false
+// Nota: migração de schema e seed foram movidos para `Services/LocationsDbInitializer.cs`.
 static async Task EnsureLocationsSchemaAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
 {
-    try
+    var columns = await GetLocationsColumnsAsync(db, cancellationToken);
+
+    if (!columns.Contains("Temperature"))
     {
-        await db.Database.ExecuteSqlRawAsync(
-            "ALTER TABLE Locations ADD COLUMN Temperature REAL NOT NULL DEFAULT 0",
-            cancellationToken);
-        DebugUtil.Log("DB schema updated: added Locations.Temperature column.");
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE Locations ADD COLUMN Temperature REAL NOT NULL DEFAULT 0",
+                cancellationToken);
+            DebugUtil.Log("DB schema updated: added Locations.Temperature column.");
+        }
+        catch (Exception ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase)
+                                   || ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+        {
+            DebugUtil.Log("DB schema already includes Locations.Temperature column.");
+        }
     }
-    catch (Exception ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase)
-                               || ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+
+    if (columns.Contains("Type"))
     {
-        DebugUtil.Log("DB schema already includes Locations.Temperature column.");
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync("ALTER TABLE Locations DROP COLUMN Type", cancellationToken);
+            DebugUtil.Log("DB schema updated: dropped Locations.Type column.");
+        }
+        catch (Exception ex)
+        {
+            DebugUtil.Log($"DB schema: DROP COLUMN Type failed ({ex.Message}). Rebuilding Locations table...");
+            await RebuildLocationsTableWithoutTypeAsync(db, cancellationToken);
+            DebugUtil.Log("DB schema updated: rebuilt Locations table without Type column.");
+        }
     }
+}
+
+static async Task<HashSet<string>> GetLocationsColumnsAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+{
+    var conn = db.Database.GetDbConnection();
+    if (conn.State != ConnectionState.Open)
+    {
+        await conn.OpenAsync(cancellationToken);
+    }
+
+    await using var cmd = conn.CreateCommand();
+    cmd.CommandText = "PRAGMA table_info('Locations')";
+
+    var columns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+    while (await reader.ReadAsync(cancellationToken))
+    {
+        var name = reader["name"]?.ToString();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            columns.Add(name);
+        }
+    }
+
+    return columns;
+}
+
+static async Task RebuildLocationsTableWithoutTypeAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+{
+    // SQLite fallback for environments where ALTER TABLE ... DROP COLUMN isn't available.
+    await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
+
+    await db.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS Locations_new", cancellationToken);
+
+    await db.Database.ExecuteSqlRawAsync(
+        """
+        CREATE TABLE Locations_new (
+            Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            Name TEXT NOT NULL,
+            Latitude REAL NOT NULL,
+            Longitude REAL NOT NULL,
+            Weather TEXT NOT NULL,
+            Temperature REAL NOT NULL DEFAULT 0,
+            LastUpdated TEXT NOT NULL
+        )
+        """,
+        cancellationToken);
+
+    await db.Database.ExecuteSqlRawAsync(
+        """
+        INSERT INTO Locations_new (Id, Name, Latitude, Longitude, Weather, Temperature, LastUpdated)
+        SELECT
+            Id,
+            Name,
+            Latitude,
+            Longitude,
+            COALESCE(Weather, 'N/A'),
+            COALESCE(Temperature, 0),
+            COALESCE(LastUpdated, '0001-01-01T00:00:00.0000000')
+        FROM Locations
+        """,
+        cancellationToken);
+
+    await db.Database.ExecuteSqlRawAsync("DROP TABLE Locations", cancellationToken);
+    await db.Database.ExecuteSqlRawAsync("ALTER TABLE Locations_new RENAME TO Locations", cancellationToken);
+
+    await tx.CommitAsync(cancellationToken);
 }
 
 static async Task EnsureLocationsSeededAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
@@ -146,16 +236,17 @@ static async Task EnsureLocationsSeededAsync(LocationsDbContext db, Cancellation
     }
 
     db.Locations.AddRange(
-        new Location { Name = "Funchal", Latitude = 32.6669, Longitude = -16.9241, Type = "city", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Pico do Areeiro", Latitude = 32.7356, Longitude = -16.9289, Type = "nature", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Porto Moniz", Latitude = 32.8668, Longitude = -17.1662, Type = "nature", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Santana", Latitude = 32.8007, Longitude = -16.8801, Type = "rural", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Ponta de São Lourenço", Latitude = 32.7403, Longitude = -16.7014, Type = "nature", Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue }
+        new Location { Name = "Funchal", Latitude = 32.6669, Longitude = -16.9241, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Pico do Areeiro", Latitude = 32.7356, Longitude = -16.9289, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Porto Moniz", Latitude = 32.8668, Longitude = -17.1662, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Santana", Latitude = 32.8007, Longitude = -16.8801, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
+        new Location { Name = "Ponta de São Lourenço", Latitude = 32.7403, Longitude = -16.7014, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue }
     );
 
     await db.SaveChangesAsync(cancellationToken);
     DebugUtil.Log("DB seeded with default Madeira locations.");
 }
+#endif
 
 static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService apiService, CancellationToken cancellationToken = default)
 {
@@ -238,10 +329,11 @@ do
     DebugUtil.Log($"User input: {DebugUtil.Truncate(userInput.Trim(), 200)}");
 
     // ====================================================================================================================
-    // 1) Abrir DB e manter dados coerentes (seed + refresh de temperaturas)
+    // 1) Abrir DB e manter dados coerentes (schema + seed + refresh de temperaturas)
     // ====================================================================================================================
     await using var db = CreateDb();
-    await EnsureLocationsSeededAsync(db);
+    await LocationsDbInitializer.EnsureLocationsSchemaAsync(db);
+    await LocationsDbInitializer.EnsureLocationsSeededAsync(db);
     await RefreshAllTemperaturesAsync(db, apiService);
 
     // ====================================================================================================================
@@ -304,7 +396,7 @@ do
     if (locationEntity is null)
     {
         DebugUtil.Log($"DB upsert: inserting new location '{placeName}'.");
-        locationEntity = new Location { Type = "unknown", Weather = "N/A" };
+        locationEntity = new Location { Weather = "N/A" };
         db.Locations.Add(locationEntity);
     }
     else

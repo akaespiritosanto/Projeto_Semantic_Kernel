@@ -6,3 +6,6 @@ ollama run llama3.1
 
 Executar modelo para o programa funcionar (no terminal):
 ollama serve
+
+Testes unitários:
+dotnet run -- --self-test

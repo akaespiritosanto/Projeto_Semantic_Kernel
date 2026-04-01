@@ -16,7 +16,6 @@ public sealed class LocationsDbContext : DbContext
             entity.ToTable("Locations");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Name).IsRequired();
-            entity.Property(x => x.Type).IsRequired();
             entity.Property(x => x.Weather).IsRequired();
             entity.Property(x => x.Temperature);
         });

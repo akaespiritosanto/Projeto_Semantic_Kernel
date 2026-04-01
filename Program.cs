@@ -53,17 +53,13 @@ var apiService = new ApiService(httpClient);
 LocationsDbContext CreateDb() => new(dbOptions);
 
 // ====================================================================================================================
-// Inicialização da base de dados (criar, ajustar schema e fazer seed)
-// - Remove colunas legadas (ex: Locations.Type) quando necessário
+// Inicialização da base de dados
+// - Cria o ficheiro SQLite se não existir
+// - Garante que o schema está atualizado (ex: remove colunas legadas)
+// - Faz seed inicial (localizações default) quando a tabela está vazia
+// - Atualiza as temperaturas para a tabela ficar útil logo no arranque
 // ====================================================================================================================
-await using (var db = CreateDb())
-{
-    db.Database.EnsureCreated();
-    await LocationsDbInitializer.EnsureLocationsSchemaAsync(db);
-    await LocationsDbInitializer.EnsureLocationsSeededAsync(db);
-    await RefreshAllTemperaturesAsync(db, apiService);
-    DebugUtil.Log($"DB ready. Locations count: {await db.Locations.CountAsync()}");
-}
+await EnsureDatabaseReadyAsync(CreateDb, apiService);
 
 // ====================================================================================================================
 // Agentes (Semantic Kernel)
@@ -122,131 +118,30 @@ var interpreterAgent = new ChatCompletionAgent
 // ====================================================================================================================
 // Funções auxiliares (base de dados)
 // ====================================================================================================================
-#if false
-// Nota: migração de schema e seed foram movidos para `Services/LocationsDbInitializer.cs`.
-static async Task EnsureLocationsSchemaAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+// Nota: migração de schema e seed foram movidos para `Services/LocationsDbInitializer.cs` para manter este ficheiro
+// (Program.cs) focado no fluxo principal da aplicação.
+
+static async Task EnsureDatabaseReadyAsync(Func<LocationsDbContext> createDb, ApiService apiService, CancellationToken cancellationToken = default)
 {
-    var columns = await GetLocationsColumnsAsync(db, cancellationToken);
+    await using var db = createDb();
 
-    if (!columns.Contains("Temperature"))
-    {
-        try
-        {
-            await db.Database.ExecuteSqlRawAsync(
-                "ALTER TABLE Locations ADD COLUMN Temperature REAL NOT NULL DEFAULT 0",
-                cancellationToken);
-            DebugUtil.Log("DB schema updated: added Locations.Temperature column.");
-        }
-        catch (Exception ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase)
-                                   || ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
-        {
-            DebugUtil.Log("DB schema already includes Locations.Temperature column.");
-        }
-    }
+    // `EnsureCreated` é suficiente para este projeto (não estamos a usar migrations EF).
+    db.Database.EnsureCreated();
 
-    if (columns.Contains("Type"))
-    {
-        try
-        {
-            await db.Database.ExecuteSqlRawAsync("ALTER TABLE Locations DROP COLUMN Type", cancellationToken);
-            DebugUtil.Log("DB schema updated: dropped Locations.Type column.");
-        }
-        catch (Exception ex)
-        {
-            DebugUtil.Log($"DB schema: DROP COLUMN Type failed ({ex.Message}). Rebuilding Locations table...");
-            await RebuildLocationsTableWithoutTypeAsync(db, cancellationToken);
-            DebugUtil.Log("DB schema updated: rebuilt Locations table without Type column.");
-        }
-    }
+    // Mantém o schema e dados base coerentes, mesmo que o ficheiro `locations.db` já exista de execuções anteriores.
+    await EnsureDatabaseConsistentAsync(db, apiService, cancellationToken);
+
+    DebugUtil.Log($"DB ready. Locations count: {await db.Locations.CountAsync(cancellationToken)}");
 }
 
-static async Task<HashSet<string>> GetLocationsColumnsAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+static async Task EnsureDatabaseConsistentAsync(LocationsDbContext db, ApiService apiService, CancellationToken cancellationToken = default)
 {
-    var conn = db.Database.GetDbConnection();
-    if (conn.State != ConnectionState.Open)
-    {
-        await conn.OpenAsync(cancellationToken);
-    }
+    await LocationsDbInitializer.EnsureLocationsSchemaAsync(db, cancellationToken);
+    await LocationsDbInitializer.EnsureLocationsSeededAsync(db, cancellationToken);
 
-    await using var cmd = conn.CreateCommand();
-    cmd.CommandText = "PRAGMA table_info('Locations')";
-
-    var columns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-    await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
-    while (await reader.ReadAsync(cancellationToken))
-    {
-        var name = reader["name"]?.ToString();
-        if (!string.IsNullOrWhiteSpace(name))
-        {
-            columns.Add(name);
-        }
-    }
-
-    return columns;
+    // Best-effort: se falhar (ex: sem API_KEY), o erro fica no log e a app continua.
+    await RefreshAllTemperaturesAsync(db, apiService, cancellationToken);
 }
-
-static async Task RebuildLocationsTableWithoutTypeAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
-{
-    // SQLite fallback for environments where ALTER TABLE ... DROP COLUMN isn't available.
-    await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
-
-    await db.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS Locations_new", cancellationToken);
-
-    await db.Database.ExecuteSqlRawAsync(
-        """
-        CREATE TABLE Locations_new (
-            Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            Name TEXT NOT NULL,
-            Latitude REAL NOT NULL,
-            Longitude REAL NOT NULL,
-            Weather TEXT NOT NULL,
-            Temperature REAL NOT NULL DEFAULT 0,
-            LastUpdated TEXT NOT NULL
-        )
-        """,
-        cancellationToken);
-
-    await db.Database.ExecuteSqlRawAsync(
-        """
-        INSERT INTO Locations_new (Id, Name, Latitude, Longitude, Weather, Temperature, LastUpdated)
-        SELECT
-            Id,
-            Name,
-            Latitude,
-            Longitude,
-            COALESCE(Weather, 'N/A'),
-            COALESCE(Temperature, 0),
-            COALESCE(LastUpdated, '0001-01-01T00:00:00.0000000')
-        FROM Locations
-        """,
-        cancellationToken);
-
-    await db.Database.ExecuteSqlRawAsync("DROP TABLE Locations", cancellationToken);
-    await db.Database.ExecuteSqlRawAsync("ALTER TABLE Locations_new RENAME TO Locations", cancellationToken);
-
-    await tx.CommitAsync(cancellationToken);
-}
-
-static async Task EnsureLocationsSeededAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
-{
-    if (await db.Locations.AnyAsync(cancellationToken))
-    {
-        DebugUtil.Log("DB seed skipped (Locations already has rows).");
-        return;
-    }
-
-    db.Locations.AddRange(
-        new Location { Name = "Funchal", Latitude = 32.6669, Longitude = -16.9241, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Pico do Areeiro", Latitude = 32.7356, Longitude = -16.9289, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Porto Moniz", Latitude = 32.8668, Longitude = -17.1662, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Santana", Latitude = 32.8007, Longitude = -16.8801, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue },
-        new Location { Name = "Ponta de São Lourenço", Latitude = 32.7403, Longitude = -16.7014, Weather = "N/A", Temperature = 0, LastUpdated = DateTime.MinValue }
-    );
-
-    await db.SaveChangesAsync(cancellationToken);
-    DebugUtil.Log("DB seeded with default Madeira locations.");
-}
-#endif
 
 static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService apiService, CancellationToken cancellationToken = default)
 {
@@ -291,12 +186,6 @@ static async Task RefreshAllTemperaturesAsync(LocationsDbContext db, ApiService 
 }
 
 // ====================================================================================================================
-// Funções auxiliares (formatação)
-// ====================================================================================================================
-static string BuildLocationsTable(IReadOnlyList<LocationRow> rows) =>
-    AppLogic.BuildLocationsTable(rows);
-
-// ====================================================================================================================
 // Funções auxiliares (chamadas a agentes)
 // ====================================================================================================================
 static async Task<string> InvokeAgentLastTextAsync(ChatCompletionAgent agent, string input, CancellationToken cancellationToken = default)
@@ -314,85 +203,34 @@ static async Task<string> InvokeAgentLastTextAsync(ChatCompletionAgent agent, st
     return last.Trim();
 }
 
-// ====================================================================================================================
-// Loop principal (chat)
-// ====================================================================================================================
-do
+static async Task<string> FormatTemperatureAsync(ChatCompletionAgent weatherAgent, double temperatureC, CancellationToken cancellationToken = default)
 {
-    Console.Write("User > ");
-    string? userInput = Console.ReadLine();
-    if (userInput is null || userInput.Trim().Equals("exit", StringComparison.OrdinalIgnoreCase))
-    {
-        break;
-    }
-
-    DebugUtil.Log($"User input: {DebugUtil.Truncate(userInput.Trim(), 200)}");
-
-    // ====================================================================================================================
-    // 1) Abrir DB e manter dados coerentes (schema + seed + refresh de temperaturas)
-    // ====================================================================================================================
-    await using var db = CreateDb();
-    await LocationsDbInitializer.EnsureLocationsSchemaAsync(db);
-    await LocationsDbInitializer.EnsureLocationsSeededAsync(db);
-    await RefreshAllTemperaturesAsync(db, apiService);
-
-    // ====================================================================================================================
-    // 2) Pedir ao agente "Ideas" uma recomendação (JSON)
-    // ====================================================================================================================
-    DebugUtil.Log("Invoking Ideas agent...");
-    var ideasOutput = await InvokeAgentLastTextAsync(ideasAgent, userInput);
-
-    DebugUtil.Log($"Ideas raw output: {DebugUtil.Truncate(ideasOutput, 400)}");
-
-    if (!AppLogic.TryParsePlace(ideasOutput, out var place))
-    {
-        Console.WriteLine("Assistant > Não consegui interpretar as coordenadas. Tenta novamente.");
-        DebugUtil.Log("TryParsePlace failed.");
-        continue;
-    }
-
-    DebugUtil.Log($"Parsed place: name='{place.Name}', location='{place.Location}', lat={place.Lat}, lon={place.Lon}");
-
-    // ====================================================================================================================
-    // 3) Obter temperatura via API e (opcionalmente) formatar com o agente "Weather"
-    // ====================================================================================================================
-    WeatherApiResponse? weatherApiResponse;
-    try
-    {
-        weatherApiResponse = await apiService.SearchWeather(place.Lat, place.Lon);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("Assistant > Erro ao chamar a API do tempo: " + ex.Message);
-        DebugUtil.Log($"Weather API error for parsed place: {ex}");
-        continue;
-    }
-
-    var temperature = weatherApiResponse?.main?.temp;
-    if (temperature is null)
-    {
-        Console.WriteLine("Assistant > Não consegui obter a temperatura atual. Tenta novamente.");
-        DebugUtil.Log("Weather API response missing temperature.");
-        continue;
-    }
-
-    DebugUtil.Log($"Weather API temperature for parsed place: {temperature.Value.ToString(CultureInfo.InvariantCulture)} C");
-
-    var weatherInput = JsonSerializer.Serialize(new { temp = temperature.Value });
-    var weatherText = await InvokeAgentLastTextAsync(weatherAgent, weatherInput);
+    // O agente "Weather" serve apenas para devolver a temperatura num formato curto. Se falhar, fazemos fallback local.
+    var weatherInput = JsonSerializer.Serialize(new { temp = temperatureC });
+    var weatherText = await InvokeAgentLastTextAsync(weatherAgent, weatherInput, cancellationToken);
     if (string.IsNullOrWhiteSpace(weatherText))
     {
-        weatherText = temperature.Value.ToString("0.#", CultureInfo.InvariantCulture) + "°C";
+        weatherText = temperatureC.ToString("0.#", CultureInfo.InvariantCulture) + "°C";
     }
 
-    // ====================================================================================================================
-    // 4) Guardar/atualizar a localização no SQLite (upsert simples por nome)
-    // ====================================================================================================================
-    var now = DateTime.UtcNow;
+    return weatherText;
+}
+
+static async Task UpsertLocationAsync(
+    LocationsDbContext db,
+    PlaceRecommendation place,
+    double temperatureC,
+    string weatherText,
+    DateTime nowUtc,
+    CancellationToken cancellationToken = default)
+{
     var placeName = (place.Name ?? "Unknown").Trim();
     var placeNameLower = placeName.ToLowerInvariant();
 
-    var locationEntity = await db.Locations.FirstOrDefaultAsync(l => l.Name != null && l.Name.ToLower() == placeNameLower);
+    var locationEntity = await db.Locations.FirstOrDefaultAsync(
+        l => l.Name != null && l.Name.ToLower() == placeNameLower,
+        cancellationToken);
+
     if (locationEntity is null)
     {
         DebugUtil.Log($"DB upsert: inserting new location '{placeName}'.");
@@ -407,67 +245,180 @@ do
     locationEntity.Name = placeName;
     locationEntity.Latitude = place.Lat;
     locationEntity.Longitude = place.Lon;
-    locationEntity.Temperature = temperature.Value;
+    locationEntity.Temperature = temperatureC;
     locationEntity.Weather = weatherText;
-    locationEntity.LastUpdated = now;
+    locationEntity.LastUpdated = nowUtc;
 
-    await db.SaveChangesAsync();
+    await db.SaveChangesAsync(cancellationToken);
+}
 
-    // ====================================================================================================================
-    // 5) Criar snapshot para imprimir a tabela (texto alinhado)
-    // ====================================================================================================================
-    var locationsSnapshot = await db.Locations.AsNoTracking()
+static async Task<List<LocationRow>> BuildLocationsSnapshotAsync(LocationsDbContext db, CancellationToken cancellationToken = default)
+{
+    const string locationName = "Madeira";
+
+    // Snapshot é "read-only" (AsNoTracking) porque serve apenas para imprimir/interpretar o estado atual.
+    var rows = await db.Locations.AsNoTracking()
         .OrderBy(l => l.Name)
         .Select(l => new LocationRow(
-            "Madeira",
+            locationName,
             l.Name,
             l.Latitude,
             l.Longitude,
             l.Temperature,
             l.LastUpdated))
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
 
-    locationsSnapshot.RemoveAll(r => string.Equals(r.Name, "Curral das Freiras", StringComparison.OrdinalIgnoreCase));
+    // Regra de negócio temporária (mantida para não alterar comportamento).
+    rows.RemoveAll(r => string.Equals(r.Name, "Curral das Freiras", StringComparison.OrdinalIgnoreCase));
 
-    DebugUtil.Log($"Locations snapshot rows: {locationsSnapshot.Count}");
+    return rows;
+}
 
-    var tableOutput = BuildLocationsTable(locationsSnapshot);
-    DebugUtil.Log($"Table output: {DebugUtil.Truncate(tableOutput, 400)}");
-    Console.WriteLine(tableOutput);
-
-    // ====================================================================================================================
-    // 6) Mensagem final com base na tabela (agente "Interpreter" + fallback local)
-    // ====================================================================================================================
-    DebugUtil.Log("Interpreter agent: generating final message...");
-    string finalMessage = string.Empty;
+static async Task<string> BuildFinalMessageAsync(
+    ChatCompletionAgent interpreterAgent,
+    string selectedName,
+    IReadOnlyList<LocationRow> rows,
+    CancellationToken cancellationToken = default)
+{
+    // Tentamos gerar a frase com o agente "Interpreter". Se falhar, fazemos fallback local.
     try
     {
-        var finalInput = JsonSerializer.Serialize(new { selectedName = placeName, rows = locationsSnapshot }, new JsonSerializerOptions { WriteIndented = true });
-        var finalMessageRaw = await InvokeAgentLastTextAsync(interpreterAgent, finalInput);
-        finalMessage = (finalMessageRaw ?? string.Empty).Trim();
+        var finalInput = JsonSerializer.Serialize(
+            new { selectedName, rows },
+            new JsonSerializerOptions { WriteIndented = true });
+
+        var finalMessageRaw = await InvokeAgentLastTextAsync(interpreterAgent, finalInput, cancellationToken);
+        var finalMessage = (finalMessageRaw ?? string.Empty).Trim();
+        if (!string.IsNullOrWhiteSpace(finalMessage))
+        {
+            return finalMessage;
+        }
     }
     catch (Exception ex)
     {
         DebugUtil.Log($"Interpreter agent failed: {ex.Message}");
     }
 
-    if (string.IsNullOrWhiteSpace(finalMessage))
+    var row = rows.FirstOrDefault(r => string.Equals(r.Name, selectedName, StringComparison.OrdinalIgnoreCase));
+    if (row is not null && !string.IsNullOrWhiteSpace(row.Name))
     {
-        var row = locationsSnapshot.FirstOrDefault(r => string.Equals(r.Name, placeName, StringComparison.OrdinalIgnoreCase));
-        if (row is not null && !string.IsNullOrWhiteSpace(row.Name))
-        {
-            var invariant = CultureInfo.InvariantCulture;
-            finalMessage = $"Para {row.Name} ({row.Location}), a temperatura atual é {row.TemperatureC.ToString("0.##", invariant)}°C (atualizado em {row.LastUpdated.ToString("O", invariant)}).";
-        }
-        else
-        {
-            finalMessage = "Não consegui encontrar essa localização na tabela.";
-        }
+        var invariant = CultureInfo.InvariantCulture;
+        return $"Para {row.Name} ({row.Location}), a temperatura atual é {row.TemperatureC.ToString("0.##", invariant)}°C (atualizado em {row.LastUpdated.ToString("O", invariant)}).";
     }
 
-    Console.WriteLine();
-    Console.WriteLine(finalMessage);
-} while (true);
+    return "Não consegui encontrar essa localização na tabela.";
+}
+
+static async Task RunChatLoopAsync(
+    Func<LocationsDbContext> createDb,
+    ApiService apiService,
+    ChatCompletionAgent ideasAgent,
+    ChatCompletionAgent weatherAgent,
+    ChatCompletionAgent interpreterAgent,
+    CancellationToken cancellationToken = default)
+{
+    while (true)
+    {
+        Console.Write("User > ");
+        var userInputRaw = Console.ReadLine();
+        if (userInputRaw is null)
+        {
+            break;
+        }
+
+        var userInput = userInputRaw.Trim();
+        if (userInput.Equals("exit", StringComparison.OrdinalIgnoreCase))
+        {
+            break;
+        }
+
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            continue;
+        }
+
+        DebugUtil.Log($"User input: {DebugUtil.Truncate(userInput, 200)}");
+
+        // ================================================================================================================
+        // 1) Abrir DB e manter dados coerentes (schema + seed + refresh de temperaturas)
+        // ================================================================================================================
+        await using var db = createDb();
+        await EnsureDatabaseConsistentAsync(db, apiService, cancellationToken);
+
+        // ================================================================================================================
+        // 2) Pedir ao agente "Ideas" uma recomendação (JSON)
+        // ================================================================================================================
+        DebugUtil.Log("Invoking Ideas agent...");
+        var ideasOutput = await InvokeAgentLastTextAsync(ideasAgent, userInput, cancellationToken);
+        DebugUtil.Log($"Ideas raw output: {DebugUtil.Truncate(ideasOutput, 400)}");
+
+        if (!AppLogic.TryParsePlace(ideasOutput, out var place))
+        {
+            Console.WriteLine("Assistant > Não consegui interpretar as coordenadas. Tenta novamente.");
+            DebugUtil.Log("TryParsePlace failed.");
+            continue;
+        }
+
+        DebugUtil.Log($"Parsed place: name='{place.Name}', location='{place.Location}', lat={place.Lat}, lon={place.Lon}");
+
+        // ================================================================================================================
+        // 3) Obter temperatura via API e formatar com o agente "Weather"
+        // ================================================================================================================
+        WeatherApiResponse? weatherApiResponse;
+        try
+        {
+            weatherApiResponse = await apiService.SearchWeather(place.Lat, place.Lon, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Assistant > Erro ao chamar a API do tempo: " + ex.Message);
+            DebugUtil.Log($"Weather API error for parsed place: {ex}");
+            continue;
+        }
+
+        var temperatureC = weatherApiResponse?.main?.temp;
+        if (temperatureC is null)
+        {
+            Console.WriteLine("Assistant > Não consegui obter a temperatura atual. Tenta novamente.");
+            DebugUtil.Log("Weather API response missing temperature.");
+            continue;
+        }
+
+        DebugUtil.Log($"Weather API temperature for parsed place: {temperatureC.Value.ToString(CultureInfo.InvariantCulture)} C");
+        var weatherText = await FormatTemperatureAsync(weatherAgent, temperatureC.Value, cancellationToken);
+
+        // ================================================================================================================
+        // 4) Guardar/atualizar a localização no SQLite (upsert simples por nome)
+        // ================================================================================================================
+        var nowUtc = DateTime.UtcNow;
+        await UpsertLocationAsync(db, place, temperatureC.Value, weatherText, nowUtc, cancellationToken);
+
+        // ================================================================================================================
+        // 5) Criar snapshot para imprimir a tabela (texto alinhado)
+        // ================================================================================================================
+        var locationsSnapshot = await BuildLocationsSnapshotAsync(db, cancellationToken);
+        DebugUtil.Log($"Locations snapshot rows: {locationsSnapshot.Count}");
+
+        var tableOutput = AppLogic.BuildLocationsTable(locationsSnapshot);
+        DebugUtil.Log($"Table output: {DebugUtil.Truncate(tableOutput, 400)}");
+        Console.WriteLine(tableOutput);
+
+        // ================================================================================================================
+        // 6) Mensagem final com base na tabela (agente "Interpreter" + fallback local)
+        // ================================================================================================================
+        DebugUtil.Log("Interpreter agent: generating final message...");
+        var selectedName = (place.Name ?? "Unknown").Trim();
+        var finalMessage = await BuildFinalMessageAsync(interpreterAgent, selectedName, locationsSnapshot, cancellationToken);
+
+        Console.WriteLine();
+        Console.WriteLine(finalMessage);
+    }
+}
+
+// ====================================================================================================================
+// Loop principal (chat)
+// ====================================================================================================================
+await RunChatLoopAsync(CreateDb, apiService, ideasAgent, weatherAgent, interpreterAgent);
 
 // ====================================================================================================================
 // Modelos (DTOs internos)

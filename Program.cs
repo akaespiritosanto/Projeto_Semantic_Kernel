@@ -103,15 +103,16 @@ static IEnumerable<(string Key, string Value)> ParseDotEnvFile(string path)
     }
 }
 
-static string RequireEnvVar(string name, string example)
+static string GetEnvOrDefault(string name, string defaultValue, string exampleForDocs)
 {
     var value = Environment.GetEnvironmentVariable(name);
-    if (string.IsNullOrWhiteSpace(value))
+    if (!string.IsNullOrWhiteSpace(value))
     {
-        throw new InvalidOperationException($"Missing {name}. Add it to your .env (example: {example}).");
+        return value;
     }
 
-    return value;
+    DebugUtil.Log($"Env '{name}' not set. Using default: {defaultValue}. (Example: {exampleForDocs})");
+    return defaultValue;
 }
 
 static string GetOllamaEndpoint()
@@ -124,23 +125,22 @@ static string GetOllamaEndpoint()
 
     var fallbackVarName = IsRunningInContainer() ? "OLLAMA_ENDPOINT_DOCKER" : "OLLAMA_ENDPOINT_LOCAL";
     var fallback = Environment.GetEnvironmentVariable(fallbackVarName);
-    if (string.IsNullOrWhiteSpace(fallback))
+    if (!string.IsNullOrWhiteSpace(fallback))
     {
-        throw new InvalidOperationException(
-            "Missing Ollama endpoint. Add one of these to your .env: "
-            + "OLLAMA_ENDPOINT (explicit), "
-            + "OLLAMA_ENDPOINT_LOCAL=http://localhost:11434, "
-            + "OLLAMA_ENDPOINT_DOCKER=http://host.docker.internal:11434");
+        return fallback;
     }
 
-    return fallback;
+    // Safe defaults for first-run experience (can always be overridden by env vars).
+    return IsRunningInContainer()
+        ? "http://host.docker.internal:11434"
+        : "http://localhost:11434";
 }
 
 // ====================================================================================================================
 // Configuração do Kernel / LLM
 // ====================================================================================================================
 var ollamaEndpoint = GetOllamaEndpoint();
-var ollamaModel = RequireEnvVar("OLLAMA_MODEL", "OLLAMA_MODEL=llama3.1:latest");
+var ollamaModel = GetEnvOrDefault("OLLAMA_MODEL", "llama3.1:latest", "OLLAMA_MODEL=llama3.1:latest");
 
 var builder = Kernel.CreateBuilder()
     .AddOllamaChatCompletion(
@@ -154,8 +154,9 @@ DebugUtil.Log("Semantic Kernel built.");
 // ====================================================================================================================
 // HTTP + Base de dados (SQLite)
 // ====================================================================================================================
-var locationsDbConnectionString = RequireEnvVar(
+var locationsDbConnectionString = GetEnvOrDefault(
     "LOCATIONS_DB_CONNECTION_STRING",
+    "Data Source=locations.db",
     "LOCATIONS_DB_CONNECTION_STRING=Data Source=locations.db");
 
 static void EnsureSqliteDirectoryExists(string sqliteConnectionString)

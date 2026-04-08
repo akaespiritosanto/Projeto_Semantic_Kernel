@@ -18,8 +18,8 @@ public class ApiService
         string? apiKey = Environment.GetEnvironmentVariable("API_KEY");
         if (string.IsNullOrWhiteSpace(apiKey))
         {
-            DebugUtil.Log("Missing environment variable API_KEY (OpenWeather).");
-            throw new InvalidOperationException("Missing environment variable API_KEY (OpenWeather).");
+            DebugUtil.Log("Missing environment variable API_KEY (OpenWeather). Skipping weather request.");
+            return null;
         }
 
         string urlForLog =

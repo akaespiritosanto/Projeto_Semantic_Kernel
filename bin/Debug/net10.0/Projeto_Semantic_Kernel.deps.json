@@ -8,7 +8,6 @@
     ".NETCoreApp,Version=v10.0": {
       "Projeto_Semantic_Kernel/1.0.0": {
         "dependencies": {
-          "DotNetEnv": "3.1.1",
           "Microsoft.EntityFrameworkCore": "10.0.5",
           "Microsoft.EntityFrameworkCore.Sqlite": "10.0.5",
           "Microsoft.Extensions.DependencyInjection": "10.0.5",
@@ -43,19 +42,6 @@
           "lib/net8.0/Azure.Core.dll": {
             "assemblyVersion": "1.50.0.0",
             "fileVersion": "1.5000.25.55604"
-          }
-        }
-      },
-      "DotNetEnv/3.1.1": {
-        "dependencies": {
-          "Microsoft.Extensions.Configuration": "10.0.5",
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.5",
-          "Sprache": "2.3.1"
-        },
-        "runtime": {
-          "lib/netstandard1.3/DotNetEnv.dll": {
-            "assemblyVersion": "3.1.1.0",
-            "fileVersion": "3.1.1.0"
           }
         }
       },
@@ -519,14 +505,6 @@
           }
         }
       },
-      "Sprache/2.3.1": {
-        "runtime": {
-          "lib/netstandard2.1/Sprache.dll": {
-            "assemblyVersion": "2.3.1.0",
-            "fileVersion": "2.3.1.0"
-          }
-        }
-      },
       "SQLitePCLRaw.bundle_e_sqlite3/2.1.11": {
         "dependencies": {
           "SQLitePCLRaw.lib.e_sqlite3": "2.1.11",
@@ -726,13 +704,6 @@
       "sha512": "sha512-GBNKZEhdIbTXxedvD3R7I/yDVFX9jJJEz02kCziFSJxspSQ5RMHc3GktulJ1s7+ffXaXD7kMgrtdQTaggyInLw==",
       "path": "azure.core/1.50.0",
       "hashPath": "azure.core.1.50.0.nupkg.sha512"
-    },
-    "DotNetEnv/3.1.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-o4SqUVCq0pqHF/HYsZk6k22XGIVmvsDVo+Dy7l0ubq9uQ45JkXswrMRJmYvhGLXWFYF0M5OupMonytB+0zvpGQ==",
-      "path": "dotnetenv/3.1.1",
-      "hashPath": "dotnetenv.3.1.1.nupkg.sha512"
     },
     "Microsoft.Agents.AI.Abstractions/1.0.0-preview.251009.1": {
       "type": "package",
@@ -1006,13 +977,6 @@
       "sha512": "sha512-KcYpZ9IhuxFD2hGAJlL5vABtkr00CjeJU0SY8CjZQyzvzkzLop8jhdX3iDvteVJg6e3y4TEiY+Kti4gDJAagnA==",
       "path": "openai/2.8.0",
       "hashPath": "openai.2.8.0.nupkg.sha512"
-    },
-    "Sprache/2.3.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Q+mXeiTxiUYG3lKYF6TS82/SyB4F2613Q1yXTMwg4jWGHEEVC3yrzHtNcI4B3qnDI0+eJsezGJ0V+cToUytHWw==",
-      "path": "sprache/2.3.1",
-      "hashPath": "sprache.2.3.1.nupkg.sha512"
     },
     "SQLitePCLRaw.bundle_e_sqlite3/2.1.11": {
       "type": "package",

@@ -73,12 +73,12 @@ internal static class AppLogic
         const string colLat = "Latitude";
         const string colLon = "Longitude";
         const string colTemp = "Temperature (C)";
-        const string colUpdated = "LastUpdated";
+        const string colUpdated = "LastUpdated (Local)";
 
         var invariant = CultureInfo.InvariantCulture;
         string FormatLatLon(double value) => value.ToString("0.0000", invariant);
-        string FormatTemp(double temp) => temp.ToString("0.00", invariant) + "°C";
-        string FormatUpdated(DateTime dt) => dt == default ? string.Empty : dt.ToString("O", invariant);
+        string FormatUpdated(DateTimeOffset dt) => dt == default ? string.Empty : dt.ToString("O", invariant);
+        string FormatTemp(LocationRow row) => row.LastUpdated == default ? string.Empty : row.TemperatureC.ToString("0.00", invariant) + "°C";
 
         int wLocation = colLocation.Length;
         int wName = colName.Length;
@@ -93,7 +93,7 @@ internal static class AppLogic
             wName = Math.Max(wName, (row.Name ?? string.Empty).Length);
             wLat = Math.Max(wLat, FormatLatLon(row.Latitude).Length);
             wLon = Math.Max(wLon, FormatLatLon(row.Longitude).Length);
-            wTemp = Math.Max(wTemp, FormatTemp(row.TemperatureC).Length);
+            wTemp = Math.Max(wTemp, FormatTemp(row).Length);
             wUpdated = Math.Max(wUpdated, FormatUpdated(row.LastUpdated).Length);
         }
 
@@ -108,7 +108,7 @@ internal static class AppLogic
         foreach (var row in rows)
         {
             sb.AppendLine(
-                $"{PadRight(row.Location, wLocation)} | {PadRight(row.Name, wName)} | {PadLeft(FormatLatLon(row.Latitude), wLat)} | {PadLeft(FormatLatLon(row.Longitude), wLon)} | {PadLeft(FormatTemp(row.TemperatureC), wTemp)} | {PadLeft(FormatUpdated(row.LastUpdated), wUpdated)}");
+                $"{PadRight(row.Location, wLocation)} | {PadRight(row.Name, wName)} | {PadLeft(FormatLatLon(row.Latitude), wLat)} | {PadLeft(FormatLatLon(row.Longitude), wLon)} | {PadLeft(FormatTemp(row), wTemp)} | {PadLeft(FormatUpdated(row.LastUpdated), wUpdated)}");
         }
 
         return sb.ToString();

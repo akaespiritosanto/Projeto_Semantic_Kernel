@@ -1,0 +1,13 @@
+bin/
+obj/
+.dotnet_home/
+.dotnet/
+.nuget/
+
+*.db
+*.db-wal
+*.db-shm
+
+*.trn
+
+.env.local

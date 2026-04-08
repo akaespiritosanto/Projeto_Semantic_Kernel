@@ -1,0 +1,10 @@
+CREATE TABLE Locations (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    Latitude REAL NOT NULL,
+    Longitude REAL NOT NULL,
+    Type TEXT NOT NULL,
+    Weather TEXT NOT NULL,
+    LastUpdated TEXT NOT NULL
+);
+

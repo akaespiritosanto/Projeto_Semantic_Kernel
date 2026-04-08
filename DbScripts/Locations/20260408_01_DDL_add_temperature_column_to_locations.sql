@@ -1,0 +1,3 @@
+ALTER TABLE Locations
+ADD COLUMN Temperature REAL NOT NULL DEFAULT 0;
+

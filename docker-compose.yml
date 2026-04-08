@@ -1,0 +1,18 @@
+services:
+  semantickernel-afonso:
+    image: semantickernel-afonso
+    container_name: semantickernel-afonso
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    environment:
+      # Pass everything as container parameters (environment variables).
+      LOCATIONS_DB_CONNECTION_STRING: ${LOCATIONS_DB_CONNECTION_STRING}
+      API_KEY: ${API_KEY}
+      OLLAMA_ENDPOINT: ${OLLAMA_ENDPOINT}
+      OLLAMA_ENDPOINT_LOCAL: ${OLLAMA_ENDPOINT_LOCAL}
+      OLLAMA_ENDPOINT_DOCKER: ${OLLAMA_ENDPOINT_DOCKER}
+      OLLAMA_MODEL: ${OLLAMA_MODEL}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      APP_DEBUG: ${APP_DEBUG}

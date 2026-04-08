@@ -1,0 +1,3 @@
+ALTER TABLE Locations
+DROP COLUMN Type;
+

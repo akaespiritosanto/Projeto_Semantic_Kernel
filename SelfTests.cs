@@ -5,6 +5,7 @@ using semantic_kernel.Services;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 // ====================================================================================================================
 // Auto-testes simples (sem dependências externas)
@@ -26,6 +27,35 @@ internal static class SelfTests
 
             failures++;
             Console.Error.WriteLine("FAIL: " + message);
+        }
+
+        // ====================================================================================================================
+        // DbScripts (exists + naming convention)
+        // ====================================================================================================================
+        try
+        {
+            var scriptsRoot = Path.Combine(AppContext.BaseDirectory, "DbScripts");
+            Assert(Directory.Exists(scriptsRoot), "DbScripts folder exists in output directory.");
+
+            var scripts = Directory.Exists(scriptsRoot)
+                ? Directory.EnumerateFiles(scriptsRoot, "*.sql", SearchOption.AllDirectories).ToList()
+                : new List<string>();
+
+            Assert(scripts.Count > 0, "DbScripts contains at least one .sql file.");
+
+            var namePattern = new Regex(@"^\d{8}_\d{2}_(DDL|DML)_.+\.sql$", RegexOptions.CultureInvariant);
+            foreach (var scriptPath in scripts)
+            {
+                var name = Path.GetFileName(scriptPath);
+                Assert(namePattern.IsMatch(name), $"DbScripts file name follows convention: {name}");
+            }
+
+            var ddl = DbScripts.Load("Locations/20260408_01_DDL_add_temperature_column_to_locations.sql");
+            Assert(ddl.Contains("ALTER TABLE", StringComparison.OrdinalIgnoreCase), "DbScripts.Load returns SQL content.");
+        }
+        catch (Exception ex)
+        {
+            Assert(false, "DbScripts self-test failed: " + ex.Message);
         }
 
         // ====================================================================================================================
@@ -61,8 +91,9 @@ internal static class SelfTests
         // ====================================================================================================================
         var rows = new List<LocationRow>
         {
-            new("Madeira", "Funchal", 32.6669, -16.9241, 16.1, DateTime.Parse("2026-03-31T20:33:20.8179028Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal)),
-            new("Madeira", "Pico do Areeiro", 32.7356, -16.9289, 7.1, DateTime.Parse("2026-03-31T20:33:20.8720101Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal)),
+            new("Madeira", "Funchal", 32.6669, -16.9241, 16.1, DateTimeOffset.Parse("2026-03-31T20:33:20.8179028Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)),
+            new("Madeira", "Pico do Areeiro", 32.7356, -16.9289, 7.1, DateTimeOffset.Parse("2026-03-31T20:33:20.8720101Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)),
+            new("Madeira", "NoTemp", 0, 0, 0, default),
         };
 
         var table = AppLogic.BuildLocationsTable(rows);
@@ -86,6 +117,10 @@ internal static class SelfTests
             }
         }
 
+        var noTempLine = lines.FirstOrDefault(l => l.Contains("NoTemp", StringComparison.Ordinal));
+        Assert(noTempLine is not null, "BuildLocationsTable includes row with default LastUpdated.");
+        Assert(noTempLine is null || !noTempLine.Contains("°C", StringComparison.Ordinal), "Rows with default LastUpdated don't show a temperature.");
+
         // ====================================================================================================================
         // Locations schema migration (remove legacy Type column)
         // ====================================================================================================================
@@ -99,19 +134,9 @@ internal static class SelfTests
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText =
-                    """
-                    CREATE TABLE Locations (
-                        Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                        Name TEXT NOT NULL,
-                        Latitude REAL NOT NULL,
-                        Longitude REAL NOT NULL,
-                        Type TEXT NOT NULL,
-                        Weather TEXT NOT NULL,
-                        LastUpdated TEXT NOT NULL
-                    );
-                    INSERT INTO Locations (Name, Latitude, Longitude, Type, Weather, LastUpdated)
-                    VALUES ('LegacyRow', 1.0, 2.0, 'legacy', 'N/A', '2026-03-31T20:33:20.8179028Z');
-                    """;
+                    DbScripts.Load("SelfTests/20260408_01_DDL_create_legacy_locations_table_with_type.sql")
+                    + "\n"
+                    + DbScripts.Load("SelfTests/20260408_02_DML_insert_legacy_location_row.sql");
                 cmd.ExecuteNonQuery();
             }
 

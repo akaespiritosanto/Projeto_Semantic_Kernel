@@ -1,10 +1,10 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
-using DotNetEnv;
 using semantic_kernel;
 using semantic_kernel.Dtos;
 using semantic_kernel.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Location = semantic_kernel.Models.Location;
 using System.Globalization;
 using System.Text.Json;
@@ -21,19 +21,132 @@ if (Array.Exists(args, a => string.Equals(a, "--self-test", StringComparison.Ord
 }
 
 // ====================================================================================================================
-// Configuração do Kernel / LLM
-// ====================================================================================================================
-var builder = Kernel.CreateBuilder()
-    .AddOllamaChatCompletion(
-        modelId: "llama3.1:latest",
-        endpoint: new Uri("http://localhost:11434")
-);
-
-// ====================================================================================================================
 // Variáveis de ambiente
 // ====================================================================================================================
-Env.Load();
-DebugUtil.Log("Loaded environment (.env).");
+LoadDotEnvPreferNonEmpty();
+DebugUtil.Log("Loaded environment (.env) when present.");
+
+static void LoadDotEnvPreferNonEmpty()
+{
+    // Why: docker-compose can create empty env vars (e.g. `FOO: ${FOO}` when host var is missing),
+    // and those empty vars should NOT block values from `.env`.
+    // Rule: only set vars from `.env` when the current value is missing OR whitespace.
+    var envPath = FindDotEnvPath();
+    if (envPath is null)
+    {
+        DebugUtil.Log("No .env found (skipping).");
+        return;
+    }
+
+    int applied = 0;
+    foreach (var (key, value) in ParseDotEnvFile(envPath))
+    {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            continue;
+        }
+
+        var current = Environment.GetEnvironmentVariable(key);
+        if (string.IsNullOrWhiteSpace(current))
+        {
+            Environment.SetEnvironmentVariable(key, value);
+            applied++;
+        }
+    }
+
+    DebugUtil.Log($".env loaded from '{envPath}'. Applied {applied} variable(s).");
+}
+
+static string? FindDotEnvPath()
+{
+    var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+    for (int depth = 0; depth < 20 && dir is not null; depth++)
+    {
+        var candidate = Path.Combine(dir.FullName, ".env");
+        if (File.Exists(candidate))
+        {
+            return candidate;
+        }
+
+        dir = dir.Parent;
+    }
+
+    return null;
+}
+
+static IEnumerable<(string Key, string Value)> ParseDotEnvFile(string path)
+{
+    foreach (var raw in File.ReadLines(path))
+    {
+        var line = raw.Trim();
+        if (line.Length == 0 || line.StartsWith('#'))
+        {
+            continue;
+        }
+
+        var idx = line.IndexOf('=');
+        if (idx <= 0)
+        {
+            continue;
+        }
+
+        var key = line[..idx].Trim();
+        var value = line[(idx + 1)..].Trim();
+
+        if (value.Length >= 2
+            && ((value[0] == '\"' && value[^1] == '\"') || (value[0] == '\'' && value[^1] == '\'')))
+        {
+            value = value[1..^1];
+        }
+
+        yield return (key, value);
+    }
+}
+
+static string RequireEnvVar(string name, string example)
+{
+    var value = Environment.GetEnvironmentVariable(name);
+    if (string.IsNullOrWhiteSpace(value))
+    {
+        throw new InvalidOperationException($"Missing {name}. Add it to your .env (example: {example}).");
+    }
+
+    return value;
+}
+
+static string GetOllamaEndpoint()
+{
+    var explicitValue = Environment.GetEnvironmentVariable("OLLAMA_ENDPOINT");
+    if (!string.IsNullOrWhiteSpace(explicitValue))
+    {
+        return explicitValue;
+    }
+
+    var fallbackVarName = IsRunningInContainer() ? "OLLAMA_ENDPOINT_DOCKER" : "OLLAMA_ENDPOINT_LOCAL";
+    var fallback = Environment.GetEnvironmentVariable(fallbackVarName);
+    if (string.IsNullOrWhiteSpace(fallback))
+    {
+        throw new InvalidOperationException(
+            "Missing Ollama endpoint. Add one of these to your .env: "
+            + "OLLAMA_ENDPOINT (explicit), "
+            + "OLLAMA_ENDPOINT_LOCAL=http://localhost:11434, "
+            + "OLLAMA_ENDPOINT_DOCKER=http://host.docker.internal:11434");
+    }
+
+    return fallback;
+}
+
+// ====================================================================================================================
+// Configuração do Kernel / LLM
+// ====================================================================================================================
+var ollamaEndpoint = GetOllamaEndpoint();
+var ollamaModel = RequireEnvVar("OLLAMA_MODEL", "OLLAMA_MODEL=llama3.1:latest");
+
+var builder = Kernel.CreateBuilder()
+    .AddOllamaChatCompletion(
+        modelId: ollamaModel,
+        endpoint: new Uri(ollamaEndpoint)
+);
 
 var kernel = builder.Build();
 DebugUtil.Log("Semantic Kernel built.");
@@ -41,10 +154,59 @@ DebugUtil.Log("Semantic Kernel built.");
 // ====================================================================================================================
 // HTTP + Base de dados (SQLite)
 // ====================================================================================================================
-var locationsDbPath = Path.Combine(AppContext.BaseDirectory, "locations.db");
-DebugUtil.Log($"SQLite DB path: {locationsDbPath}");
+var locationsDbConnectionString = RequireEnvVar(
+    "LOCATIONS_DB_CONNECTION_STRING",
+    "LOCATIONS_DB_CONNECTION_STRING=Data Source=locations.db");
+
+static void EnsureSqliteDirectoryExists(string sqliteConnectionString)
+{
+    try
+    {
+        var csb = new SqliteConnectionStringBuilder(sqliteConnectionString);
+        var dataSource = csb.DataSource;
+        if (string.IsNullOrWhiteSpace(dataSource) || string.Equals(dataSource, ":memory:", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (dataSource.StartsWith("file:", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var dir = Path.GetDirectoryName(dataSource);
+        if (!string.IsNullOrWhiteSpace(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+    }
+    catch (Exception ex)
+    {
+        DebugUtil.Log($"SQLite: could not validate/create directory from connection string ({ex.Message}).");
+    }
+}
+
+EnsureSqliteDirectoryExists(locationsDbConnectionString);
+try
+{
+    var csb = new SqliteConnectionStringBuilder(locationsDbConnectionString);
+    var dataSource = csb.DataSource;
+    if (!string.IsNullOrWhiteSpace(dataSource) && !dataSource.StartsWith("file:", StringComparison.OrdinalIgnoreCase))
+    {
+        var full = Path.IsPathRooted(dataSource) ? dataSource : Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), dataSource));
+        DebugUtil.Log($"SQLite DB path: {full}");
+    }
+    else
+    {
+        DebugUtil.Log("SQLite DB path: (not a file path)");
+    }
+}
+catch
+{
+    DebugUtil.Log("SQLite DB path: (unavailable)");
+}
 var dbOptions = new DbContextOptionsBuilder<LocationsDbContext>()
-    .UseSqlite($"Data Source={locationsDbPath}")
+    .UseSqlite(locationsDbConnectionString)
     .Options;
 
 using var httpClient = new HttpClient();
@@ -105,6 +267,7 @@ var interpreterAgent = new ChatCompletionAgent
     1) Find the row in rows whose Name matches selectedName (case-insensitive).
     2) Output ONLY a short final message to the user in Portuguese based on that row (no table, no code fences).
        Example format: "Para {Name} ({Location}), a temperatura atual é {TemperatureC}°C (atualizado em {LastUpdated})."
+       If LastUpdated is missing/default (e.g. "0001-01-01..."), say the temperature is not available yet and mention API_KEY is needed.
     3) If no matching row is found, say you couldn't find that location in the table.
     """,
     Kernel = kernel
@@ -207,7 +370,15 @@ static async Task<string> FormatTemperatureAsync(ChatCompletionAgent weatherAgen
 {
     // O agente "Weather" serve apenas para devolver a temperatura num formato curto. Se falhar, fazemos fallback local.
     var weatherInput = JsonSerializer.Serialize(new { temp = temperatureC });
-    var weatherText = await InvokeAgentLastTextAsync(weatherAgent, weatherInput, cancellationToken);
+    string weatherText = string.Empty;
+    try
+    {
+        weatherText = await InvokeAgentLastTextAsync(weatherAgent, weatherInput, cancellationToken);
+    }
+    catch (Exception ex)
+    {
+        DebugUtil.Log($"Weather agent failed (fallback to local formatting): {ex.Message}");
+    }
     if (string.IsNullOrWhiteSpace(weatherText))
     {
         weatherText = temperatureC.ToString("0.#", CultureInfo.InvariantCulture) + "°C";
@@ -219,8 +390,8 @@ static async Task<string> FormatTemperatureAsync(ChatCompletionAgent weatherAgen
 static async Task UpsertLocationAsync(
     LocationsDbContext db,
     PlaceRecommendation place,
-    double temperatureC,
-    string weatherText,
+    double? temperatureC,
+    string? weatherText,
     DateTime nowUtc,
     CancellationToken cancellationToken = default)
 {
@@ -245,9 +416,19 @@ static async Task UpsertLocationAsync(
     locationEntity.Name = placeName;
     locationEntity.Latitude = place.Lat;
     locationEntity.Longitude = place.Lon;
-    locationEntity.Temperature = temperatureC;
-    locationEntity.Weather = weatherText;
-    locationEntity.LastUpdated = nowUtc;
+
+    if (temperatureC is not null && !string.IsNullOrWhiteSpace(weatherText) && nowUtc != default)
+    {
+        locationEntity.Temperature = temperatureC.Value;
+        locationEntity.Weather = weatherText;
+        locationEntity.LastUpdated = nowUtc;
+    }
+    else if (locationEntity.Id == 0)
+    {
+        locationEntity.Temperature = 0;
+        locationEntity.Weather = "N/A";
+        locationEntity.LastUpdated = default;
+    }
 
     await db.SaveChangesAsync(cancellationToken);
 }
@@ -256,22 +437,65 @@ static async Task<List<LocationRow>> BuildLocationsSnapshotAsync(LocationsDbCont
 {
     const string locationName = "Madeira";
 
+    var tz = GetDisplayTimeZone();
+
     // Snapshot é "read-only" (AsNoTracking) porque serve apenas para imprimir/interpretar o estado atual.
-    var rows = await db.Locations.AsNoTracking()
+    var raw = await db.Locations.AsNoTracking()
         .OrderBy(l => l.Name)
-        .Select(l => new LocationRow(
+        .Select(l => new { l.Name, l.Latitude, l.Longitude, l.Temperature, l.LastUpdated })
+        .ToListAsync(cancellationToken);
+
+    var rows = raw.Select(l => new LocationRow(
             locationName,
             l.Name,
             l.Latitude,
             l.Longitude,
             l.Temperature,
-            l.LastUpdated))
-        .ToListAsync(cancellationToken);
+            ConvertUtcToDisplayTime(l.LastUpdated, tz)))
+        .ToList();
 
     // Regra de negócio temporária (mantida para não alterar comportamento).
     rows.RemoveAll(r => string.Equals(r.Name, "Curral das Freiras", StringComparison.OrdinalIgnoreCase));
 
     return rows;
+}
+
+static TimeZoneInfo GetDisplayTimeZone()
+{
+    // Prefer explicit app setting, fallback to standard `TZ`, then OS default.
+    var id = Environment.GetEnvironmentVariable("APP_TIMEZONE");
+    if (string.IsNullOrWhiteSpace(id))
+    {
+        id = Environment.GetEnvironmentVariable("TZ");
+    }
+
+    if (string.IsNullOrWhiteSpace(id))
+    {
+        return TimeZoneInfo.Local;
+    }
+
+    try
+    {
+        return TimeZoneInfo.FindSystemTimeZoneById(id);
+    }
+    catch (Exception ex)
+    {
+        DebugUtil.Log($"Timezone '{id}' not found ({ex.Message}). Using system local timezone.");
+        return TimeZoneInfo.Local;
+    }
+}
+
+static DateTimeOffset ConvertUtcToDisplayTime(DateTime utcFromDb, TimeZoneInfo tz)
+{
+    if (utcFromDb == default)
+    {
+        return default;
+    }
+
+    // SQLite returns Kind=Unspecified even if we stored UTC.
+    var utc = DateTime.SpecifyKind(utcFromDb, DateTimeKind.Utc);
+    var utcOffset = new DateTimeOffset(utc);
+    return TimeZoneInfo.ConvertTime(utcOffset, tz);
 }
 
 static async Task<string> BuildFinalMessageAsync(
@@ -280,6 +504,12 @@ static async Task<string> BuildFinalMessageAsync(
     IReadOnlyList<LocationRow> rows,
     CancellationToken cancellationToken = default)
 {
+    var row = rows.FirstOrDefault(r => string.Equals(r.Name, selectedName, StringComparison.OrdinalIgnoreCase));
+    if (row is not null && !string.IsNullOrWhiteSpace(row.Name) && row.LastUpdated == default)
+    {
+        return $"Para {row.Name} ({row.Location}), ainda não tenho a temperatura (define API_KEY no .env para ativar o tempo).";
+    }
+
     // Tentamos gerar a frase com o agente "Interpreter". Se falhar, fazemos fallback local.
     try
     {
@@ -299,7 +529,6 @@ static async Task<string> BuildFinalMessageAsync(
         DebugUtil.Log($"Interpreter agent failed: {ex.Message}");
     }
 
-    var row = rows.FirstOrDefault(r => string.Equals(r.Name, selectedName, StringComparison.OrdinalIgnoreCase));
     if (row is not null && !string.IsNullOrWhiteSpace(row.Name))
     {
         var invariant = CultureInfo.InvariantCulture;
@@ -323,6 +552,13 @@ static async Task RunChatLoopAsync(
         var userInputRaw = Console.ReadLine();
         if (userInputRaw is null)
         {
+            if (IsRunningInContainer())
+            {
+                Console.WriteLine();
+                Console.WriteLine("Assistant > Sem stdin interativo. Executa com `docker run -it ...` (ou `docker compose up`).");
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+
             break;
         }
 
@@ -349,7 +585,23 @@ static async Task RunChatLoopAsync(
         // 2) Pedir ao agente "Ideas" uma recomendação (JSON)
         // ================================================================================================================
         DebugUtil.Log("Invoking Ideas agent...");
-        var ideasOutput = await InvokeAgentLastTextAsync(ideasAgent, userInput, cancellationToken);
+        string ideasOutput;
+        try
+        {
+            ideasOutput = await InvokeAgentLastTextAsync(ideasAgent, userInput, cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine("Assistant > Não consegui ligar ao Ollama. Confirma que o `ollama serve` está a correr e que o endpoint no .env está correto.");
+            DebugUtil.Log($"Ollama connection failed (endpoint='{GetOllamaEndpoint()}'): {ex.Message}");
+            continue;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Assistant > Erro ao chamar o Ollama: " + ex.Message);
+            DebugUtil.Log($"Ideas agent failed: {ex}");
+            continue;
+        }
         DebugUtil.Log($"Ideas raw output: {DebugUtil.Truncate(ideasOutput, 400)}");
 
         if (!AppLogic.TryParsePlace(ideasOutput, out var place))
@@ -377,21 +629,25 @@ static async Task RunChatLoopAsync(
         }
 
         var temperatureC = weatherApiResponse?.main?.temp;
+        string? weatherText = null;
+        var nowUtc = default(DateTime);
+
         if (temperatureC is null)
         {
-            Console.WriteLine("Assistant > Não consegui obter a temperatura atual. Tenta novamente.");
+            Console.WriteLine("Assistant > Sem API_KEY (ou sem resposta da API), não consigo obter a temperatura agora.");
             DebugUtil.Log("Weather API response missing temperature.");
-            continue;
         }
-
-        DebugUtil.Log($"Weather API temperature for parsed place: {temperatureC.Value.ToString(CultureInfo.InvariantCulture)} C");
-        var weatherText = await FormatTemperatureAsync(weatherAgent, temperatureC.Value, cancellationToken);
+        else
+        {
+            nowUtc = DateTime.UtcNow;
+            DebugUtil.Log($"Weather API temperature for parsed place: {temperatureC.Value.ToString(CultureInfo.InvariantCulture)} C");
+            weatherText = await FormatTemperatureAsync(weatherAgent, temperatureC.Value, cancellationToken);
+        }
 
         // ================================================================================================================
         // 4) Guardar/atualizar a localização no SQLite (upsert simples por nome)
         // ================================================================================================================
-        var nowUtc = DateTime.UtcNow;
-        await UpsertLocationAsync(db, place, temperatureC.Value, weatherText, nowUtc, cancellationToken);
+        await UpsertLocationAsync(db, place, temperatureC, weatherText, nowUtc, cancellationToken);
 
         // ================================================================================================================
         // 5) Criar snapshot para imprimir a tabela (texto alinhado)
@@ -413,6 +669,12 @@ static async Task RunChatLoopAsync(
         Console.WriteLine();
         Console.WriteLine(finalMessage);
     }
+}
+
+static bool IsRunningInContainer()
+{
+    var value = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER");
+    return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
 }
 
 // ====================================================================================================================
@@ -437,4 +699,4 @@ internal sealed record LocationRow(
     double Latitude,
     double Longitude,
     double TemperatureC,
-    DateTime LastUpdated);
+    DateTimeOffset LastUpdated);

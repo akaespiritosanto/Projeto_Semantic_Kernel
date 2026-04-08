@@ -15,7 +15,7 @@ internal static class LocationsDbInitializer
             try
             {
                 await db.Database.ExecuteSqlRawAsync(
-                    "ALTER TABLE Locations ADD COLUMN Temperature REAL NOT NULL DEFAULT 0",
+                    DbScripts.Load("Locations/20260408_01_DDL_add_temperature_column_to_locations.sql"),
                     cancellationToken);
                 DebugUtil.Log("DB schema updated: added Locations.Temperature column.");
             }
@@ -30,7 +30,7 @@ internal static class LocationsDbInitializer
         {
             try
             {
-                await db.Database.ExecuteSqlRawAsync("ALTER TABLE Locations DROP COLUMN Type", cancellationToken);
+                await db.Database.ExecuteSqlRawAsync(DbScripts.Load("Locations/20260408_02_DDL_drop_type_column_from_locations.sql"), cancellationToken);
                 DebugUtil.Log("DB schema updated: dropped legacy Locations.Type column.");
             }
             catch (Exception ex)
@@ -91,39 +91,14 @@ internal static class LocationsDbInitializer
     {
         await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
 
-        await db.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS Locations_new", cancellationToken);
+        await db.Database.ExecuteSqlRawAsync(DbScripts.Load("Locations/20260408_03_DDL_drop_locations_new_table_if_exists.sql"), cancellationToken);
 
-        await db.Database.ExecuteSqlRawAsync(
-            """
-            CREATE TABLE Locations_new (
-                Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                Name TEXT NOT NULL,
-                Latitude REAL NOT NULL,
-                Longitude REAL NOT NULL,
-                Weather TEXT NOT NULL,
-                Temperature REAL NOT NULL DEFAULT 0,
-                LastUpdated TEXT NOT NULL
-            )
-            """,
-            cancellationToken);
+        await db.Database.ExecuteSqlRawAsync(DbScripts.Load("Locations/20260408_04_DDL_create_locations_new_table.sql"), cancellationToken);
 
-        await db.Database.ExecuteSqlRawAsync(
-            """
-            INSERT INTO Locations_new (Id, Name, Latitude, Longitude, Weather, Temperature, LastUpdated)
-            SELECT
-                Id,
-                Name,
-                Latitude,
-                Longitude,
-                COALESCE(Weather, 'N/A'),
-                COALESCE(Temperature, 0),
-                COALESCE(LastUpdated, '0001-01-01T00:00:00.0000000')
-            FROM Locations
-            """,
-            cancellationToken);
+        await db.Database.ExecuteSqlRawAsync(DbScripts.Load("Locations/20260408_05_DML_copy_locations_to_locations_new.sql"), cancellationToken);
 
-        await db.Database.ExecuteSqlRawAsync("DROP TABLE Locations", cancellationToken);
-        await db.Database.ExecuteSqlRawAsync("ALTER TABLE Locations_new RENAME TO Locations", cancellationToken);
+        await db.Database.ExecuteSqlRawAsync(DbScripts.Load("Locations/20260408_06_DDL_drop_locations_table.sql"), cancellationToken);
+        await db.Database.ExecuteSqlRawAsync(DbScripts.Load("Locations/20260408_07_DDL_rename_locations_new_to_locations.sql"), cancellationToken);
 
         await tx.CommitAsync(cancellationToken);
     }
